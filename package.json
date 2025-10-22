@@ -1,0 +1,20 @@
+{
+  "name": "dharaneesh-portfolio",
+  "version": "1.0.0",
+  "description": "Professional portfolio for Dharaneesh RS - Cloud Developer",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "cd client && npm run build",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "vercel-build": "cd client && npm install && npm run build"
+  },
+  "keywords": ["portfolio", "react", "nodejs", "cloud", "aws", "azure"],
+  "author": "Dharaneesh RS",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

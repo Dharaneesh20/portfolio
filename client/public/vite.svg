@@ -1,0 +1,8 @@
+<svg width="410" height="404" viewBox="0 0 410 404" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <pattern id="85737c0e-0916-41d7-917f-596dc7edfa27" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect x="0" y="0" width="4" height="4" class="text-gray-200" fill="currentColor"></rect>
+        </pattern>
+    </defs>
+    <rect width="404" height="404" fill="url(#85737c0e-0916-41d7-917f-596dc7edfa27)"></rect>
+</svg>
