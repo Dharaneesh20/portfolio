@@ -12,6 +12,7 @@ import Blog from './pages/Blog'
 import CV from './pages/CV'
 import Contact from './pages/Contact'
 import Admin from './pages/Admin'
+import CodingProgress from './pages/CodingProgress'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               <Route path="/blog" element={<Blog />} />
               <Route path="/cv" element={<CV />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/coding-progress" element={<CodingProgress />} />
               <Route path="/admin" element={<Admin />} />
             </Routes>
           </main>

@@ -10,7 +10,8 @@ import {
   FaEdit, 
   FaTrash,
   FaTimes,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaCode
 } from 'react-icons/fa'
 import { 
   getProjects, 
@@ -24,10 +25,16 @@ import {
   getBlogPosts,
   createBlogPost,
   updateBlogPost,
-  deleteBlogPost
+  deleteBlogPost,
+  getCV,
+  updateCV,
+  getCodingProgress,
+  createCodingProgress,
+  updateCodingProgress,
+  deleteCodingProgress
 } from '../services/api'
 
-type Section = 'dashboard' | 'projects' | 'certifications' | 'blog' | 'cv'
+type Section = 'dashboard' | 'projects' | 'certifications' | 'blog' | 'cv' | 'coding-progress'
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -36,6 +43,8 @@ const Admin = () => {
   const [projects, setProjects] = useState<any[]>([])
   const [certifications, setCertifications] = useState<any[]>([])
   const [blogPosts, setBlogPosts] = useState<any[]>([])
+  const [cvData, setCvData] = useState<any>(null)
+  const [codingProgress, setCodingProgress] = useState<any[]>([])
   const [showModal, setShowModal] = useState(false)
   const [editingItem, setEditingItem] = useState<any>(null)
   const [formData, setFormData] = useState<any>({})
@@ -57,6 +66,12 @@ const Admin = () => {
       } else if (activeSection === 'blog') {
         const res = await getBlogPosts()
         setBlogPosts(res.data)
+      } else if (activeSection === 'cv') {
+        const res = await getCV()
+        setCvData(res.data)
+      } else if (activeSection === 'coding-progress') {
+        const res = await getCodingProgress()
+        setCodingProgress(res.data)
       }
     } catch (error) {
       console.error('Error loading data:', error)
@@ -92,6 +107,7 @@ const Admin = () => {
       if (type === 'project') await deleteProject(id)
       else if (type === 'certification') await deleteCertification(id)
       else if (type === 'blog') await deleteBlogPost(id)
+      else if (type === 'coding-progress') await deleteCodingProgress(id)
       
       toast.success('Deleted successfully!')
       loadData()
@@ -136,6 +152,14 @@ const Admin = () => {
         } else {
           await createBlogPost(formDataToSend)
           toast.success('Blog post created!')
+        }
+      } else if (activeSection === 'coding-progress') {
+        if (editingItem) {
+          await updateCodingProgress(editingItem._id, formData)
+          toast.success('Coding progress updated!')
+        } else {
+          await createCodingProgress(formData)
+          toast.success('Coding progress created!')
         }
       }
 
@@ -258,6 +282,14 @@ const Admin = () => {
       desc: 'Update your CV',
       color: 'from-green-500 to-teal-500',
       count: 1
+    },
+    { 
+      id: 'coding-progress', 
+      icon: FaCode, 
+      title: 'Coding Progress', 
+      desc: 'Update platform stats',
+      color: 'from-yellow-500 to-amber-500',
+      count: codingProgress.length
     },
   ]
 
@@ -545,7 +577,7 @@ const Admin = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="card"
+            className="max-w-4xl mx-auto"
           >
             <button
               onClick={() => setActiveSection('dashboard')}
@@ -554,10 +586,410 @@ const Admin = () => {
               ← Back to Dashboard
             </button>
             
-            <h2 className="text-2xl font-bold mb-4">CV Management</h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              CV management interface coming soon. For now, you can update your CV data directly through the API.
-            </p>
+            {cvData && (
+              <div className="card">
+                <h2 className="text-2xl font-bold mb-6">Edit CV</h2>
+                
+                <form onSubmit={async (e) => {
+                  e.preventDefault()
+                  try {
+                    await updateCV(cvData)
+                    toast.success('CV updated successfully!')
+                  } catch (error) {
+                    toast.error('Error updating CV')
+                  }
+                }} className="space-y-6">
+                  
+                  {/* Basic Info */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
+                    <div className="space-y-4">
+                      <input
+                        type="text"
+                        placeholder="Name"
+                        value={cvData.name || ''}
+                        onChange={(e) => setCvData({ ...cvData, name: e.target.value })}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Title"
+                        value={cvData.title || ''}
+                        onChange={(e) => setCvData({ ...cvData, title: e.target.value })}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      />
+                      <textarea
+                        placeholder="Summary"
+                        value={cvData.summary || ''}
+                        onChange={(e) => setCvData({ ...cvData, summary: e.target.value })}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[100px]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Skills */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Skills</h3>
+                    {cvData.skills?.map((skill: any, idx: number) => (
+                      <div key={idx} className="mb-4 p-4 border border-gray-300 dark:border-gray-600 rounded-lg">
+                        <input
+                          type="text"
+                          placeholder="Category"
+                          value={skill.category || ''}
+                          onChange={(e) => {
+                            const newSkills = [...cvData.skills]
+                            newSkills[idx].category = e.target.value
+                            setCvData({ ...cvData, skills: newSkills })
+                          }}
+                          className="w-full px-4 py-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Items (comma separated)"
+                          value={skill.items?.join(', ') || ''}
+                          onChange={(e) => {
+                            const newSkills = [...cvData.skills]
+                            newSkills[idx].items = e.target.value.split(',').map((s: string) => s.trim())
+                            setCvData({ ...cvData, skills: newSkills })
+                          }}
+                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Experience */}
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold">Work Experience</h3>
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          const newExperience = [...(cvData.experience || []), {
+                            title: '',
+                            company: '',
+                            period: '',
+                            description: [],
+                            logoUrl: ''
+                          }]
+                          setCvData({ ...cvData, experience: newExperience })
+                        }}
+                        className="px-3 py-1 bg-primary-light dark:bg-primary-dark text-white rounded-lg text-sm flex items-center space-x-1"
+                      >
+                        <FaPlus /> <span>Add Experience</span>
+                      </motion.button>
+                    </div>
+                    {cvData.experience?.map((exp: any, idx: number) => (
+                      <div key={idx} className="mb-4 p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="font-semibold text-primary-light dark:text-primary-dark">Experience #{idx + 1}</h4>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newExperience = cvData.experience.filter((_: any, i: number) => i !== idx)
+                              setCvData({ ...cvData, experience: newExperience })
+                            }}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Job Title"
+                          value={exp.title || ''}
+                          onChange={(e) => {
+                            const newExperience = [...cvData.experience]
+                            newExperience[idx].title = e.target.value
+                            setCvData({ ...cvData, experience: newExperience })
+                          }}
+                          className="w-full px-4 py-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Company Name"
+                          value={exp.company || ''}
+                          onChange={(e) => {
+                            const newExperience = [...cvData.experience]
+                            newExperience[idx].company = e.target.value
+                            setCvData({ ...cvData, experience: newExperience })
+                          }}
+                          className="w-full px-4 py-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Period (e.g., 2020 - Present)"
+                          value={exp.period || ''}
+                          onChange={(e) => {
+                            const newExperience = [...cvData.experience]
+                            newExperience[idx].period = e.target.value
+                            setCvData({ ...cvData, experience: newExperience })
+                          }}
+                          className="w-full px-4 py-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                        <input
+                          type="url"
+                          placeholder="Company Logo URL (optional)"
+                          value={exp.logoUrl || ''}
+                          onChange={(e) => {
+                            const newExperience = [...cvData.experience]
+                            newExperience[idx].logoUrl = e.target.value
+                            setCvData({ ...cvData, experience: newExperience })
+                          }}
+                          className="w-full px-4 py-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                        <textarea
+                          placeholder="Description (one point per line)"
+                          value={exp.description?.join('\n') || ''}
+                          onChange={(e) => {
+                            const newExperience = [...cvData.experience]
+                            newExperience[idx].description = e.target.value.split('\n').filter((d: string) => d.trim())
+                            setCvData({ ...cvData, experience: newExperience })
+                          }}
+                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[100px]"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Education */}
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold">Education</h3>
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          const newEducation = [...(cvData.education || []), {
+                            degree: '',
+                            institution: '',
+                            year: '',
+                            logoUrl: ''
+                          }]
+                          setCvData({ ...cvData, education: newEducation })
+                        }}
+                        className="px-3 py-1 bg-primary-light dark:bg-primary-dark text-white rounded-lg text-sm flex items-center space-x-1"
+                      >
+                        <FaPlus /> <span>Add Education</span>
+                      </motion.button>
+                    </div>
+                    {cvData.education?.map((edu: any, idx: number) => (
+                      <div key={idx} className="mb-4 p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="font-semibold text-primary-light dark:text-primary-dark">Education #{idx + 1}</h4>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newEducation = cvData.education.filter((_: any, i: number) => i !== idx)
+                              setCvData({ ...cvData, education: newEducation })
+                            }}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Degree/Course"
+                          value={edu.degree || ''}
+                          onChange={(e) => {
+                            const newEducation = [...cvData.education]
+                            newEducation[idx].degree = e.target.value
+                            setCvData({ ...cvData, education: newEducation })
+                          }}
+                          className="w-full px-4 py-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Institution/College/School"
+                          value={edu.institution || ''}
+                          onChange={(e) => {
+                            const newEducation = [...cvData.education]
+                            newEducation[idx].institution = e.target.value
+                            setCvData({ ...cvData, education: newEducation })
+                          }}
+                          className="w-full px-4 py-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Year/Period (e.g., 2020 - Present or 2018 - 2022)"
+                          value={edu.year || ''}
+                          onChange={(e) => {
+                            const newEducation = [...cvData.education]
+                            newEducation[idx].year = e.target.value
+                            setCvData({ ...cvData, education: newEducation })
+                          }}
+                          className="w-full px-4 py-2 mb-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                        <input
+                          type="url"
+                          placeholder="Institution Logo URL (optional)"
+                          value={edu.logoUrl || ''}
+                          onChange={(e) => {
+                            const newEducation = [...cvData.education]
+                            newEducation[idx].logoUrl = e.target.value
+                            setCvData({ ...cvData, education: newEducation })
+                          }}
+                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Achievements */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Achievements</h3>
+                    <textarea
+                      placeholder="Achievements (one per line)"
+                      value={cvData.achievements?.join('\n') || ''}
+                      onChange={(e) => {
+                        setCvData({ ...cvData, achievements: e.target.value.split('\n').filter((a: string) => a.trim()) })
+                      }}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[120px]"
+                    />
+                  </div>
+
+                  <div className="flex space-x-4">
+                    <motion.button
+                      type="submit"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex-1 btn-primary"
+                    >
+                      Save CV
+                    </motion.button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Coding Progress Management */}
+        {activeSection === 'coding-progress' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setActiveSection('dashboard')}
+                className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark"
+              >
+                <span>← Back to Dashboard</span>
+              </button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAdd}
+                className="btn-primary flex items-center space-x-2"
+              >
+                <FaPlus />
+                <span>Add Platform Progress</span>
+              </motion.button>
+            </div>
+
+            <div className="grid gap-6">
+              {codingProgress.map((platform: any, index: number) => (
+                <motion.div
+                  key={platform._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="card"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold mb-2">{platform.platform}</h3>
+                      <div className="grid md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Username</p>
+                          <p className="font-semibold">{platform.username}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Profile URL</p>
+                          <a 
+                            href={platform.profileUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary-light dark:text-primary-dark hover:underline"
+                          >
+                            View Profile →
+                          </a>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Total Problems</p>
+                          <p className="font-semibold">{platform.totalProblems}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Rank</p>
+                          <p className="font-semibold">{platform.rank || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Rating</p>
+                          <p className="font-semibold">{platform.rating || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Current Streak</p>
+                          <p className="font-semibold">{platform.currentStreak || 0} days</p>
+                        </div>
+                      </div>
+                      
+                      {platform.stats && (
+                        <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+                          <p className="text-sm font-semibold mb-2">Problem Stats:</p>
+                          <div className="grid grid-cols-3 gap-4">
+                            <div>
+                              <p className="text-sm text-green-600 dark:text-green-400">Easy</p>
+                              <p className="font-bold">{platform.stats.easy || 0}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-yellow-600 dark:text-yellow-400">Medium</p>
+                              <p className="font-bold">{platform.stats.medium || 0}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-red-600 dark:text-red-400">Hard</p>
+                              <p className="font-bold">{platform.stats.hard || 0}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex space-x-2 ml-4">
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => handleEdit(platform)}
+                        className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                      >
+                        <FaEdit />
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => handleDelete(platform._id, 'coding-progress')}
+                        className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                      >
+                        <FaTrash />
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+
+              {codingProgress.length === 0 && (
+                <div className="text-center py-12">
+                  <FaCode className="text-6xl text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-gray-400">No coding platform progress yet</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Click "Add Platform Progress" to get started</p>
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </div>
@@ -630,36 +1062,192 @@ const Admin = () => {
                   </>
                 )}
 
-                <textarea
-                  placeholder="Description"
-                  value={formData.description || ''}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[100px]"
-                  required
-                />
+                {/* Blog-specific fields */}
+                {activeSection === 'blog' && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Author"
+                      value={formData.author || 'Dharaneesh RS'}
+                      onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    <textarea
+                      placeholder="Excerpt (Brief summary)"
+                      value={formData.excerpt || ''}
+                      onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[80px]"
+                      required
+                    />
+                    <textarea
+                      placeholder="Content (Full article)"
+                      value={formData.content || ''}
+                      onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[200px]"
+                      required
+                    />
+                  </>
+                )}
 
-                <select
-                  value={formData.cloudProvider || ''}
-                  onChange={(e) => setFormData({ ...formData, cloudProvider: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-                  aria-label="Cloud Provider"
-                >
-                  <option value="">Select Cloud Provider</option>
-                  <option value="aws">AWS</option>
-                  <option value="azure">Azure</option>
-                  <option value="mongodb">MongoDB</option>
-                  <option value="kubernetes">Kubernetes</option>
-                  <option value="redhat">Red Hat</option>
-                  <option value="gcp">Google Cloud</option>
-                  <option value="docker">Docker</option>
-                </select>
+                {/* Coding Progress-specific fields */}
+                {activeSection === 'coding-progress' && (
+                  <>
+                    <select
+                      value={formData.platform || ''}
+                      onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      aria-label="Coding Platform"
+                      required
+                    >
+                      <option value="">Select Platform</option>
+                      <option value="LeetCode">LeetCode</option>
+                      <option value="HackerRank">HackerRank</option>
+                      <option value="SkillRack">SkillRack</option>
+                      <option value="CodeChef">CodeChef</option>
+                      <option value="Codeforces">Codeforces</option>
+                    </select>
+                    
+                    <input
+                      type="text"
+                      placeholder="Username"
+                      value={formData.username || ''}
+                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    
+                    <input
+                      type="url"
+                      placeholder="Profile URL"
+                      value={formData.profileUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, profileUrl: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    
+                    <input
+                      type="number"
+                      placeholder="Total Problems Solved"
+                      value={formData.totalProblems || ''}
+                      onChange={(e) => setFormData({ ...formData, totalProblems: parseInt(e.target.value) })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    
+                    <input
+                      type="text"
+                      placeholder="Rank (optional)"
+                      value={formData.rank || ''}
+                      onChange={(e) => setFormData({ ...formData, rank: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    
+                    <input
+                      type="number"
+                      placeholder="Rating (optional)"
+                      value={formData.rating || ''}
+                      onChange={(e) => setFormData({ ...formData, rating: parseInt(e.target.value) })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    
+                    <input
+                      type="number"
+                      placeholder="Current Streak (days)"
+                      value={formData.currentStreak || ''}
+                      onChange={(e) => setFormData({ ...formData, currentStreak: parseInt(e.target.value) })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    
+                    <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg space-y-3">
+                      <p className="font-semibold text-sm">Problem Stats (Optional)</p>
+                      
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Easy</label>
+                          <input
+                            type="number"
+                            placeholder="0"
+                            value={formData.stats?.easy || ''}
+                            onChange={(e) => setFormData({ 
+                              ...formData, 
+                              stats: { ...formData.stats, easy: parseInt(e.target.value) || 0 }
+                            })}
+                            className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Medium</label>
+                          <input
+                            type="number"
+                            placeholder="0"
+                            value={formData.stats?.medium || ''}
+                            onChange={(e) => setFormData({ 
+                              ...formData, 
+                              stats: { ...formData.stats, medium: parseInt(e.target.value) || 0 }
+                            })}
+                            className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Hard</label>
+                          <input
+                            type="number"
+                            placeholder="0"
+                            value={formData.stats?.hard || ''}
+                            onChange={(e) => setFormData({ 
+                              ...formData, 
+                              stats: { ...formData.stats, hard: parseInt(e.target.value) || 0 }
+                            })}
+                            className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
 
-                {/* Image Options */}
-                <div className="space-y-4">
-                  <label className="block text-sm font-semibold">Image</label>
-                  
-                  {/* Option 1: External URL */}
-                  <div>
+                {/* Description field for non-blog items */}
+                {activeSection !== 'blog' && activeSection !== 'coding-progress' && (
+                  <textarea
+                    placeholder="Description"
+                    value={formData.description || ''}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[100px]"
+                    required
+                  />
+                )}
+
+                {/* Cloud Provider field for non-coding-progress items */}
+                {activeSection !== 'coding-progress' && (
+                  <select
+                    value={formData.cloudProvider || ''}
+                    onChange={(e) => setFormData({ ...formData, cloudProvider: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    aria-label="Cloud Provider"
+                  >
+                    <option value="">Select Cloud Provider</option>
+                    <option value="aws">AWS</option>
+                    <option value="azure">Azure</option>
+                    <option value="mongodb">MongoDB</option>
+                    <option value="kubernetes">Kubernetes</option>
+                    <option value="redhat">Red Hat</option>
+                    <option value="gcp">Google Cloud</option>
+                    <option value="docker">Docker</option>
+                    <option value="github">GitHub</option>
+                    <option value="ibm">IBM</option>
+                    <option value="nvidia">NVIDIA</option>
+                  </select>
+                )}
+
+                {/* Image Options - not for coding progress */}
+                {activeSection !== 'coding-progress' && (
+                  <div className="space-y-4">
+                    <label className="block text-sm font-semibold">Image</label>
+                    
+                    {/* Option 1: External URL */}
+                    <div>
                     <label className="block text-sm mb-2 text-gray-600 dark:text-gray-400">
                       Image URL (LinkedIn, external link, etc.)
                     </label>
@@ -697,7 +1285,8 @@ const Admin = () => {
                       aria-label="Upload image file"
                     />
                   </div>
-                </div>
+                  </div>
+                )}
 
                 <div className="flex space-x-4">
                   <motion.button

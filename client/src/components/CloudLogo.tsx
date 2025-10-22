@@ -1,5 +1,6 @@
-import { FaAws, FaMicrosoft, FaRedhat } from 'react-icons/fa'
-import { SiMongodb, SiKubernetes, SiGooglecloud, SiDocker } from 'react-icons/si'
+import { FaAws, FaMicrosoft, FaRedhat, FaGithub } from 'react-icons/fa'
+import { SiMongodb, SiKubernetes, SiGooglecloud, SiDocker, SiNvidia } from 'react-icons/si'
+import { DiJava } from 'react-icons/di'
 
 interface CloudLogoProps {
   provider: string
@@ -35,6 +36,18 @@ const CloudLogo = ({ provider, size = 'text-3xl' }: CloudLogoProps) => {
     docker: {
       icon: <SiDocker className={size} />,
       color: 'text-blue-400',
+    },
+    github: {
+      icon: <FaGithub className={size} />,
+      color: 'text-gray-800 dark:text-white',
+    },
+    ibm: {
+      icon: <DiJava className={size} />,
+      color: 'text-blue-600',
+    },
+    nvidia: {
+      icon: <SiNvidia className={size} />,
+      color: 'text-green-500',
     },
   }
 

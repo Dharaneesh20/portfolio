@@ -20,6 +20,7 @@ interface BlogPost {
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
+  const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     fetchPosts()
@@ -34,6 +35,16 @@ const Blog = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const toggleExpand = (postId: string) => {
+    const newExpanded = new Set(expandedPosts)
+    if (newExpanded.has(postId)) {
+      newExpanded.delete(postId)
+    } else {
+      newExpanded.add(postId)
+    }
+    setExpandedPosts(newExpanded)
   }
 
   if (loading) {
@@ -99,7 +110,7 @@ const Blog = () => {
                 </div>
 
                 <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  {post.excerpt}
+                  {expandedPosts.has(post._id) ? post.content : post.excerpt}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -113,8 +124,11 @@ const Blog = () => {
                   ))}
                 </div>
 
-                <button className="text-primary-light dark:text-primary-dark hover:underline font-semibold">
-                  Read More →
+                <button 
+                  onClick={() => toggleExpand(post._id)}
+                  className="text-primary-light dark:text-primary-dark hover:underline font-semibold transition-all"
+                >
+                  {expandedPosts.has(post._id) ? '← Show Less' : 'Read More →'}
                 </button>
               </div>
             </div>

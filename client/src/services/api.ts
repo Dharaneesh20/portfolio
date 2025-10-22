@@ -43,4 +43,10 @@ export const deleteBlogPost = (id: string) => api.delete(`/blog/${id}`)
 export const getCV = () => api.get('/cv')
 export const updateCV = (data: any) => api.put('/cv', data)
 
+// Coding Progress
+export const getCodingProgress = () => api.get('/coding-progress')
+export const createCodingProgress = (data: any) => api.post('/coding-progress', data)
+export const updateCodingProgress = (id: string, data: any) => api.put(`/coding-progress/${id}`, data)
+export const deleteCodingProgress = (id: string) => api.delete(`/coding-progress/${id}`)
+
 export default api
