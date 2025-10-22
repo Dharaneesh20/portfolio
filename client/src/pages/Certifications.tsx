@@ -10,6 +10,7 @@ interface Certification {
   date: string
   cloudProvider?: string
   image?: string
+  imageUrl?: string
   credentialUrl?: string
   description: string
 }
@@ -67,10 +68,10 @@ const Certifications = () => {
               </div>
             )}
 
-            {cert.image && (
+            {(cert.imageUrl || cert.image) && (
               <div className="mb-4 overflow-hidden rounded-lg">
                 <img
-                  src={cert.image}
+                  src={cert.imageUrl || cert.image}
                   alt={cert.title}
                   className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                 />

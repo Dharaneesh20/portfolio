@@ -13,6 +13,7 @@ interface BlogPost {
   date: string
   cloudProvider?: string
   image?: string
+  imageUrl?: string
   tags: string[]
 }
 
@@ -64,10 +65,10 @@ const Blog = () => {
             className="card"
           >
             <div className="md:flex gap-6">
-              {post.image && (
+              {(post.imageUrl || post.image) && (
                 <div className="md:w-1/3 mb-4 md:mb-0">
                   <img
-                    src={post.image}
+                    src={post.imageUrl || post.image}
                     alt={post.title}
                     className="w-full h-48 object-cover rounded-lg"
                   />

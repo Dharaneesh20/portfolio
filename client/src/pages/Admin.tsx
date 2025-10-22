@@ -613,6 +613,7 @@ const Admin = () => {
                   value={formData.cloudProvider || ''}
                   onChange={(e) => setFormData({ ...formData, cloudProvider: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                  aria-label="Cloud Provider"
                 >
                   <option value="">Select Cloud Provider</option>
                   <option value="aws">AWS</option>
@@ -623,6 +624,51 @@ const Admin = () => {
                   <option value="gcp">Google Cloud</option>
                   <option value="docker">Docker</option>
                 </select>
+
+                {/* Image Options */}
+                <div className="space-y-4">
+                  <label className="block text-sm font-semibold">Image</label>
+                  
+                  {/* Option 1: External URL */}
+                  <div>
+                    <label className="block text-sm mb-2 text-gray-600 dark:text-gray-400">
+                      Image URL (LinkedIn, external link, etc.)
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://media.licdn.com/dms/image/..."
+                      value={formData.imageUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                  </div>
+
+                  {/* OR Divider */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+                    <span className="text-sm text-gray-500">OR</span>
+                    <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+                  </div>
+
+                  {/* Option 2: File Upload */}
+                  <div>
+                    <label className="block text-sm mb-2 text-gray-600 dark:text-gray-400">
+                      Upload Image File
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          setFormData({ ...formData, image: file })
+                        }
+                      }}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      aria-label="Upload image file"
+                    />
+                  </div>
+                </div>
 
                 <div className="flex space-x-4">
                   <motion.button

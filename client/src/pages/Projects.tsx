@@ -11,6 +11,7 @@ interface Project {
   technologies: string[]
   cloudProvider?: string
   image?: string
+  imageUrl?: string
   githubUrl?: string
   liveUrl?: string
   status: 'completed' | 'ongoing' | 'upcoming'
@@ -93,9 +94,9 @@ const Projects = () => {
               </div>
             )}
 
-            {project.image && (
+            {(project.imageUrl || project.image) && (
               <img
-                src={project.image}
+                src={project.imageUrl || project.image}
                 alt={project.title}
                 className="w-full h-48 object-cover rounded-t-lg mb-4"
               />
