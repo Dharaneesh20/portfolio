@@ -601,6 +601,35 @@ const Admin = () => {
                   required
                 />
 
+                {/* Certification-specific fields */}
+                {activeSection === 'certifications' && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Issuer (e.g., MongoDB)"
+                      value={formData.issuer || ''}
+                      onChange={(e) => setFormData({ ...formData, issuer: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    <input
+                      type="date"
+                      placeholder="Date"
+                      value={formData.date || ''}
+                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    <input
+                      type="url"
+                      placeholder="Credential URL (optional)"
+                      value={formData.credentialUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, credentialUrl: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                  </>
+                )}
+
                 <textarea
                   placeholder="Description"
                   value={formData.description || ''}

@@ -31,7 +31,12 @@ router.post('/', async (req, res) => {
   try {
     let imagePath = ''
     
-    if (req.files && req.files.image) {
+    // Check if imageUrl is provided (external URL like LinkedIn)
+    if (req.body.imageUrl) {
+      imagePath = req.body.imageUrl
+    } 
+    // Otherwise, handle file upload
+    else if (req.files && req.files.image) {
       const image = req.files.image
       const uploadPath = `./uploads/certifications/${Date.now()}_${image.name}`
       await image.mv(uploadPath)
@@ -39,13 +44,20 @@ router.post('/', async (req, res) => {
     }
 
     const certification = new Certification({
-      ...req.body,
-      image: imagePath,
+      title: req.body.title,
+      issuer: req.body.issuer,
+      date: req.body.date,
+      cloudProvider: req.body.cloudProvider,
+      image: req.files && req.files.image ? imagePath : undefined,
+      imageUrl: req.body.imageUrl || undefined,
+      credentialUrl: req.body.credentialUrl,
+      description: req.body.description
     })
 
     const savedCertification = await certification.save()
     res.status(201).json(savedCertification)
   } catch (error) {
+    console.error('Error creating certification:', error)
     res.status(400).json({ message: error.message })
   }
 })
@@ -53,8 +65,21 @@ router.post('/', async (req, res) => {
 // Update certification
 router.put('/:id', async (req, res) => {
   try {
-    let updateData = { ...req.body }
+    let updateData = {
+      title: req.body.title,
+      issuer: req.body.issuer,
+      date: req.body.date,
+      cloudProvider: req.body.cloudProvider,
+      credentialUrl: req.body.credentialUrl,
+      description: req.body.description
+    }
     
+    // Handle imageUrl (external URL)
+    if (req.body.imageUrl) {
+      updateData.imageUrl = req.body.imageUrl
+    }
+    
+    // Handle file upload
     if (req.files && req.files.image) {
       const image = req.files.image
       const uploadPath = `./uploads/certifications/${Date.now()}_${image.name}`
@@ -74,6 +99,7 @@ router.put('/:id', async (req, res) => {
 
     res.json(certification)
   } catch (error) {
+    console.error('Error updating certification:', error)
     res.status(400).json({ message: error.message })
   }
 })
