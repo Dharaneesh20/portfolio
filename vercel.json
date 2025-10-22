@@ -1,24 +1,12 @@
 {
-  "version": 2,
   "buildCommand": "cd client && npm install && npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
-  "framework": null,
   "outputDirectory": "client/dist",
-  "builds": [
-    {
-      "src": "server/api/index.js",
-      "use": "@vercel/node"
-    }
-  ],
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/server/api/index.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/client/dist/$1"
+      "destination": "/api"
     }
   ]
 }
