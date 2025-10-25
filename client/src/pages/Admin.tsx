@@ -154,15 +154,15 @@ const Admin = () => {
           toast.success('Blog post created!')
         }
       } else if (activeSection === 'coding-progress') {
-        // Clean up the data - remove undefined/empty values
+        // Clean up the data - map field names to match backend model
         const cleanData = {
           platform: formData.platform,
           username: formData.username,
           profileUrl: formData.profileUrl,
-          totalProblems: parseInt(formData.totalProblems) || 0,
+          problemsSolved: parseInt(formData.totalProblems) || 0, // Map totalProblems to problemsSolved
           ...(formData.rank && { rank: formData.rank }),
           ...(formData.rating && { rating: parseInt(formData.rating) }),
-          ...(formData.currentStreak && { currentStreak: parseInt(formData.currentStreak) }),
+          ...(formData.currentStreak && { streak: parseInt(formData.currentStreak) }), // Map currentStreak to streak
           ...(formData.stats && {
             stats: {
               easy: parseInt(formData.stats.easy) || 0,
