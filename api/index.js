@@ -8,6 +8,7 @@ import projectRoutes from '../server/routes/projects.js'
 import certificationRoutes from '../server/routes/certifications.js'
 import blogRoutes from '../server/routes/blog.js'
 import cvRoutes from '../server/routes/cv.js'
+import codingProgressRoutes from '../server/routes/codingProgress.js'
 
 const app = express()
 
@@ -25,6 +26,7 @@ app.use('/api/projects', projectRoutes)
 app.use('/api/certifications', certificationRoutes)
 app.use('/api/blog', blogRoutes)
 app.use('/api/cv', cvRoutes)
+app.use('/api/coding-progress', codingProgressRoutes)
 
 // Health check route
 app.get('/api/health', (req, res) => {
