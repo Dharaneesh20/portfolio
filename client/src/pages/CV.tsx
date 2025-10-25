@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getCV } from '../services/api'
-import { FaBriefcase, FaGraduationCap, FaCode, FaAward, FaDownload } from 'react-icons/fa'
+import { FaBriefcase, FaGraduationCap, FaCode, FaAward, FaDownload, FaFilePdf } from 'react-icons/fa'
 import { toast } from 'react-toastify'
+import jsPDF from 'jspdf'
 
 interface Experience {
   title: string
@@ -112,6 +113,115 @@ const CV = () => {
     }
   }
 
+  const handleDownloadPDF = () => {
+    if (!cvData) return
+
+    try {
+      const doc = new jsPDF()
+      let yPosition = 20
+
+      // Helper function to add text with word wrap
+      const addText = (text: string, fontSize: number = 10, isBold: boolean = false) => {
+        doc.setFontSize(fontSize)
+        if (isBold) {
+          doc.setFont('helvetica', 'bold')
+        } else {
+          doc.setFont('helvetica', 'normal')
+        }
+        
+        const lines = doc.splitTextToSize(text, 180)
+        lines.forEach((line: string) => {
+          if (yPosition > 280) {
+            doc.addPage()
+            yPosition = 20
+          }
+          doc.text(line, 15, yPosition)
+          yPosition += fontSize * 0.5
+        })
+      }
+
+      // Name and Title
+      addText(cvData.name, 20, true)
+      yPosition += 5
+      addText(cvData.title, 12, false)
+      yPosition += 10
+
+      // Summary
+      if (cvData.summary) {
+        addText('SUMMARY', 14, true)
+        yPosition += 2
+        addText(cvData.summary, 10, false)
+        yPosition += 8
+      }
+
+      // Experience
+      if (cvData.experience && cvData.experience.length > 0) {
+        addText('EXPERIENCE', 14, true)
+        yPosition += 2
+        
+        cvData.experience.forEach((exp: Experience) => {
+          addText(`${exp.title} at ${exp.company}`, 11, true)
+          yPosition += 2
+          addText(exp.period, 9, false)
+          yPosition += 2
+          
+          exp.description.forEach((desc: string) => {
+            addText(`• ${desc}`, 10, false)
+            yPosition += 2
+          })
+          yPosition += 3
+        })
+        yPosition += 5
+      }
+
+      // Education
+      if (cvData.education && cvData.education.length > 0) {
+        addText('EDUCATION', 14, true)
+        yPosition += 2
+        
+        cvData.education.forEach((edu: Education) => {
+          addText(edu.degree, 11, true)
+          yPosition += 2
+          addText(`${edu.institution} - ${edu.year}`, 10, false)
+          yPosition += 5
+        })
+        yPosition += 5
+      }
+
+      // Skills
+      if (cvData.skills && cvData.skills.length > 0) {
+        addText('SKILLS', 14, true)
+        yPosition += 2
+        
+        cvData.skills.forEach((skill: Skill) => {
+          addText(`${skill.category}:`, 11, true)
+          yPosition += 2
+          addText(skill.items.join(', '), 10, false)
+          yPosition += 3
+        })
+        yPosition += 5
+      }
+
+      // Achievements
+      if (cvData.achievements && cvData.achievements.length > 0) {
+        addText('ACHIEVEMENTS', 14, true)
+        yPosition += 2
+        
+        cvData.achievements.forEach((achievement: string) => {
+          addText(`• ${achievement}`, 10, false)
+          yPosition += 2
+        })
+      }
+
+      // Save the PDF
+      doc.save(`${cvData.name.replace(/\s+/g, '_')}_CV.pdf`)
+      toast.success('CV downloaded as PDF successfully!')
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+      toast.error('Failed to generate PDF')
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -143,10 +253,16 @@ const CV = () => {
               {cvData.title}
             </p>
           </div>
-          <button className="btn-primary flex items-center" onClick={handleDownloadCV}>
-            <FaDownload className="mr-2" />
-            Download CV
-          </button>
+          <div className="flex gap-3">
+            <button className="btn-primary flex items-center" onClick={handleDownloadPDF}>
+              <FaFilePdf className="mr-2" />
+              Download PDF
+            </button>
+            <button className="btn-secondary flex items-center" onClick={handleDownloadCV}>
+              <FaDownload className="mr-2" />
+              Download Text
+            </button>
+          </div>
         </div>
 
         <p className="text-lg text-gray-600 dark:text-gray-400 mb-12">

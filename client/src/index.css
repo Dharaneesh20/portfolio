@@ -17,6 +17,10 @@
     @apply bg-primary-light dark:bg-primary-dark text-white px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-transform duration-200;
   }
   
+  .btn-secondary {
+    @apply bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-transform duration-200;
+  }
+  
   .card {
     @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300;
   }

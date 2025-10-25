@@ -154,11 +154,29 @@ const Admin = () => {
           toast.success('Blog post created!')
         }
       } else if (activeSection === 'coding-progress') {
+        // Clean up the data - remove undefined/empty values
+        const cleanData = {
+          platform: formData.platform,
+          username: formData.username,
+          profileUrl: formData.profileUrl,
+          totalProblems: parseInt(formData.totalProblems) || 0,
+          ...(formData.rank && { rank: formData.rank }),
+          ...(formData.rating && { rating: parseInt(formData.rating) }),
+          ...(formData.currentStreak && { currentStreak: parseInt(formData.currentStreak) }),
+          ...(formData.stats && {
+            stats: {
+              easy: parseInt(formData.stats.easy) || 0,
+              medium: parseInt(formData.stats.medium) || 0,
+              hard: parseInt(formData.stats.hard) || 0
+            }
+          })
+        }
+        
         if (editingItem) {
-          await updateCodingProgress(editingItem._id, formData)
+          await updateCodingProgress(editingItem._id, cleanData)
           toast.success('Coding progress updated!')
         } else {
-          await createCodingProgress(formData)
+          await createCodingProgress(cleanData)
           toast.success('Coding progress created!')
         }
       }
