@@ -172,6 +172,8 @@ const Admin = () => {
           })
         }
         
+        console.log('Sending coding progress data:', cleanData)
+        
         if (editingItem) {
           await updateCodingProgress(editingItem._id, cleanData)
           toast.success('Coding progress updated!')
