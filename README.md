@@ -42,41 +42,7 @@ A modern, professional portfolio website for showcasing cloud development projec
 - MongoDB Atlas account (free tier available)
 - Git
 
-## 🔧 Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Dharaneesh20/portfolio.git
-   cd portfolio
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm run install:all
-   ```
-
-3. **Set up environment variables**
-   
-   Copy `.env.example` to `.env` in the root directory:
-   ```bash
-   cp .env.example .env
-   ```
-
-   Update the `.env` file with your MongoDB connection string:
-   ```env
-   MONGODB_URI=your_mongodb_atlas_connection_string
-   PORT=5000
-   NODE_ENV=development
-   VITE_API_URL=http://localhost:5000/api
-   ADMIN_USERNAME=admin
-   ADMIN_PASSWORD=your_secure_password
-   ```
-
-4. **Set up MongoDB Atlas**
-   - Create a free account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-   - Create a new cluster
-   - Get your connection string
-   - Add it to your `.env` file
 
 ## 🚀 Running Locally
 
