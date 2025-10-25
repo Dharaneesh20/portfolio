@@ -23,7 +23,7 @@ const blogPostSchema = new mongoose.Schema({
   },
   cloudProvider: {
     type: String,
-    enum: ['aws', 'azure', 'gcp', 'mongodb', 'redhat', 'kubernetes', 'docker', ''],
+    enum: ['aws', 'azure', 'gcp', 'mongodb', 'redhat', 'kubernetes', 'docker', 'github', 'ibm', 'nvidia', ''],
   },
   image: String,
   imageUrl: String, // External image URL

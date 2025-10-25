@@ -15,11 +15,15 @@ const cvSchema = new mongoose.Schema({
     company: String,
     period: String,
     description: [String],
+    logo: String, // Uploaded logo file path
+    logoUrl: String, // External logo URL
   }],
   education: [{
     degree: String,
     institution: String,
     year: String,
+    logo: String, // Uploaded logo file path
+    logoUrl: String, // External logo URL
   }],
   skills: [{
     category: String,

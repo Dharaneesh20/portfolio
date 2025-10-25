@@ -71,6 +71,51 @@ router.put('/', async (req, res) => {
   try {
     let cv = await CV.findOne()
     
+    // Handle file uploads for experience logos
+    if (req.files) {
+      const experienceData = req.body.experience ? JSON.parse(req.body.experience) : []
+      const educationData = req.body.education ? JSON.parse(req.body.education) : []
+      
+      // Process experience logos
+      for (let i = 0; i < experienceData.length; i++) {
+        const logoKey = `experienceLogo${i}`
+        if (req.files[logoKey]) {
+          const logo = req.files[logoKey]
+          const uploadPath = `./uploads/cv/${Date.now()}_${logo.name}`
+          await logo.mv(uploadPath)
+          experienceData[i].logo = uploadPath.replace('./uploads', '/uploads')
+        }
+      }
+      
+      // Process education logos
+      for (let i = 0; i < educationData.length; i++) {
+        const logoKey = `educationLogo${i}`
+        if (req.files[logoKey]) {
+          const logo = req.files[logoKey]
+          const uploadPath = `./uploads/cv/${Date.now()}_${logo.name}`
+          await logo.mv(uploadPath)
+          educationData[i].logo = uploadPath.replace('./uploads', '/uploads')
+        }
+      }
+      
+      req.body.experience = experienceData
+      req.body.education = educationData
+    } else {
+      // Parse JSON strings if present
+      if (typeof req.body.experience === 'string') {
+        req.body.experience = JSON.parse(req.body.experience)
+      }
+      if (typeof req.body.education === 'string') {
+        req.body.education = JSON.parse(req.body.education)
+      }
+      if (typeof req.body.skills === 'string') {
+        req.body.skills = JSON.parse(req.body.skills)
+      }
+      if (typeof req.body.achievements === 'string') {
+        req.body.achievements = JSON.parse(req.body.achievements)
+      }
+    }
+    
     if (!cv) {
       cv = new CV(req.body)
     } else {
