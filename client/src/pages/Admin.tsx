@@ -80,7 +80,7 @@ const Admin = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    if (credentials.username === 'admin' && credentials.password === 'changeme123') {
+    if (credentials.username === 'admin' && credentials.password === 'rsdh@7060') {
       setIsLoggedIn(true)
       toast.success('Welcome back! 🎉')
     } else {
