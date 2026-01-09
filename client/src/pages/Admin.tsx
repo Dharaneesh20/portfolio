@@ -1186,19 +1186,13 @@ const Admin = () => {
                       <option value="contract">Contract</option>
                     </select>
                     
-                    <div>
-                      <label className="block text-sm font-semibold mb-2">Certificate Image</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            setFormData({ ...formData, certificateImage: e.target.files[0] })
-                          }
-                        }}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-                      />
-                    </div>
+                    <input
+                      type="url"
+                      placeholder="Certificate Image URL (optional)"
+                      value={formData.certificateImageUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, certificateImageUrl: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
                     
                     <input
                       type="text"
@@ -1268,11 +1262,10 @@ const Admin = () => {
                     </div>
                     
                     <textarea
-                      placeholder="Summary / Learning Curve (optional)"
+                      placeholder="Describe what you learned, skills gained, and overall experience..."
                       value={formData.summary || formData.learningCurve || ''}
                       onChange={(e) => setFormData({ ...formData, summary: e.target.value, learningCurve: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[120px]"
-                      placeholder="Describe what you learned, skills gained, and overall experience..."
                     />
                   </>
                 )}
