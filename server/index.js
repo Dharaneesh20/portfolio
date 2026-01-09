@@ -10,6 +10,7 @@ import certificationRoutes from './routes/certifications.js'
 import blogRoutes from './routes/blog.js'
 import cvRoutes from './routes/cv.js'
 import codingProgressRoutes from './routes/codingProgress.js'
+import experienceRoutes from './routes/experience.js'
 
 dotenv.config()
 
@@ -34,6 +35,7 @@ app.use('/api/certifications', certificationRoutes)
 app.use('/api/blog', blogRoutes)
 app.use('/api/cv', cvRoutes)
 app.use('/api/coding-progress', codingProgressRoutes)
+app.use('/api/experience', experienceRoutes)
 
 // Health check route
 app.get('/api/health', (req, res) => {

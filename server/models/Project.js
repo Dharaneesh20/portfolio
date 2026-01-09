@@ -12,6 +12,12 @@ const projectSchema = new mongoose.Schema({
   technologies: [{
     type: String,
   }],
+  frameworks: [{
+    type: String,
+  }],
+  tools: [{
+    type: String,
+  }],
   cloudProvider: {
     type: String,
     enum: ['aws', 'azure', 'gcp', 'mongodb', 'redhat', 'kubernetes', 'docker', 'github', 'ibm', 'nvidia', ''],

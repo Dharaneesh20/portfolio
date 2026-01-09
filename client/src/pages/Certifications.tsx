@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getCertifications } from '../services/api'
 import CloudLogo from '../components/CloudLogo'
-import { FaChevronDown } from 'react-icons/fa'
+import ImageModal from '../components/ImageModal'
+import { FaChevronDown, FaSearchPlus } from 'react-icons/fa'
 
 interface Certification {
   _id: string
@@ -21,6 +22,7 @@ const Certifications = () => {
   const [loading, setLoading] = useState(true)
   const [selectedProvider, setSelectedProvider] = useState<string>('all')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null)
 
   useEffect(() => {
     fetchCertifications()
@@ -141,12 +143,21 @@ const Certifications = () => {
             )}
 
             {(cert.imageUrl || cert.image) && (
-              <div className="mb-4 overflow-hidden rounded-lg">
+              <div 
+                className="mb-4 overflow-hidden rounded-lg relative cursor-pointer group"
+                onClick={() => setSelectedImage({ 
+                  url: cert.imageUrl || cert.image || '', 
+                  title: cert.title 
+                })}
+              >
                 <img
                   src={cert.imageUrl || cert.image}
                   alt={cert.title}
                   className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+                  <FaSearchPlus className="text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
               </div>
             )}
 
@@ -185,6 +196,14 @@ const Certifications = () => {
           </p>
         </div>
       )}
+
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={selectedImage !== null}
+        onClose={() => setSelectedImage(null)}
+        imageUrl={selectedImage?.url || ''}
+        title={selectedImage?.title || ''}
+      />
     </div>
   )
 }

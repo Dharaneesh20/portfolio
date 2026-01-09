@@ -11,7 +11,8 @@ import {
   FaTrash,
   FaTimes,
   FaSignOutAlt,
-  FaCode
+  FaCode,
+  FaBriefcase
 } from 'react-icons/fa'
 import { 
   getProjects, 
@@ -22,6 +23,10 @@ import {
   createCertification,
   updateCertification,
   deleteCertification,
+  getExperiences,
+  createExperience,
+  updateExperience,
+  deleteExperience,
   getBlogPosts,
   createBlogPost,
   updateBlogPost,
@@ -34,13 +39,14 @@ import {
   deleteCodingProgress
 } from '../services/api'
 
-type Section = 'dashboard' | 'projects' | 'certifications' | 'blog' | 'cv' | 'coding-progress'
+type Section = 'dashboard' | 'projects' | 'experience' | 'certifications' | 'blog' | 'cv' | 'coding-progress'
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [credentials, setCredentials] = useState({ username: '', password: '' })
   const [activeSection, setActiveSection] = useState<Section>('dashboard')
   const [projects, setProjects] = useState<any[]>([])
+  const [experiences, setExperiences] = useState<any[]>([])
   const [certifications, setCertifications] = useState<any[]>([])
   const [blogPosts, setBlogPosts] = useState<any[]>([])
   const [cvData, setCvData] = useState<any>(null)
@@ -60,6 +66,9 @@ const Admin = () => {
       if (activeSection === 'projects') {
         const res = await getProjects()
         setProjects(res.data)
+      } else if (activeSection === 'experience') {
+        const res = await getExperiences()
+        setExperiences(res.data)
       } else if (activeSection === 'certifications') {
         const res = await getCertifications()
         setCertifications(res.data)
@@ -105,6 +114,7 @@ const Admin = () => {
     
     try {
       if (type === 'project') await deleteProject(id)
+      else if (type === 'experience') await deleteExperience(id)
       else if (type === 'certification') await deleteCertification(id)
       else if (type === 'blog') await deleteBlogPost(id)
       else if (type === 'coding-progress') await deleteCodingProgress(id)
@@ -122,7 +132,7 @@ const Admin = () => {
     try {
       const formDataToSend = new FormData()
       Object.keys(formData).forEach(key => {
-        if (key === 'technologies' || key === 'tags') {
+        if (key === 'technologies' || key === 'tags' || key === 'techStack' || key === 'projects') {
           formDataToSend.append(key, JSON.stringify(formData[key]))
         } else if (formData[key]) {
           formDataToSend.append(key, formData[key])
@@ -136,6 +146,14 @@ const Admin = () => {
         } else {
           await createProject(formDataToSend)
           toast.success('Project created!')
+        }
+      } else if (activeSection === 'experience') {
+        if (editingItem) {
+          await updateExperience(editingItem._id, formDataToSend)
+          toast.success('Experience updated!')
+        } else {
+          await createExperience(formDataToSend)
+          toast.success('Experience created!')
         }
       } else if (activeSection === 'certifications') {
         if (editingItem) {
@@ -278,6 +296,14 @@ const Admin = () => {
       desc: 'Manage your projects',
       color: 'from-blue-500 to-cyan-500',
       count: projects.length
+    },
+    { 
+      id: 'experience', 
+      icon: FaBriefcase, 
+      title: 'Experience', 
+      desc: 'Manage internships',
+      color: 'from-indigo-500 to-blue-500',
+      count: experiences.length
     },
     { 
       id: 'certifications', 
@@ -441,6 +467,73 @@ const Admin = () => {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => handleDelete(project._id, 'project')}
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                      >
+                        <FaTrash />
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Experience Management */}
+        {activeSection === 'experience' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setActiveSection('dashboard')}
+                className="text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark"
+              >
+                ← Back to Dashboard
+              </button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAdd}
+                className="btn-primary flex items-center space-x-2"
+              >
+                <FaPlus />
+                <span>Add Experience</span>
+              </motion.button>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <AnimatePresence>
+                {experiences.map((exp, index) => (
+                  <motion.div
+                    key={exp._id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="card"
+                  >
+                    <h3 className="text-xl font-bold mb-2">{exp.role}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-2">{exp.company}</p>
+                    <p className="text-sm text-gray-500 mb-4">{exp.duration}</p>
+                    
+                    <div className="flex space-x-2">
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => handleEdit(exp)}
+                        className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center space-x-2"
+                      >
+                        <FaEdit />
+                        <span>Edit</span>
+                      </motion.button>
+                      
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => handleDelete(exp._id, 'experience')}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                       >
                         <FaTrash />
@@ -1044,14 +1137,156 @@ const Admin = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Title"
-                  value={formData.title || ''}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-                  required
-                />
+                {/* Experience-specific fields */}
+                {activeSection === 'experience' && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Company Name *"
+                      value={formData.company || ''}
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    
+                    <input
+                      type="text"
+                      placeholder="Role/Position *"
+                      value={formData.role || ''}
+                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    
+                    <input
+                      type="text"
+                      placeholder="Duration (e.g., 3 months, Jun 2024 - Aug 2024) *"
+                      value={formData.duration || ''}
+                      onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    
+                    <input
+                      type="text"
+                      placeholder="Location (optional)"
+                      value={formData.location || ''}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    
+                    <select
+                      value={formData.type || 'internship'}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    >
+                      <option value="internship">Internship</option>
+                      <option value="full-time">Full-time</option>
+                      <option value="part-time">Part-time</option>
+                      <option value="contract">Contract</option>
+                    </select>
+                    
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">Certificate Image</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            setFormData({ ...formData, certificateImage: e.target.files[0] })
+                          }
+                        }}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      />
+                    </div>
+                    
+                    <input
+                      type="text"
+                      placeholder="Tech Stack (comma separated, e.g., React, Node.js, MongoDB)"
+                      value={Array.isArray(formData.techStack) ? formData.techStack.join(', ') : formData.techStack || ''}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        techStack: e.target.value.split(',').map((t: string) => t.trim()).filter((t: string) => t)
+                      })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    
+                    <div className="space-y-3">
+                      <label className="block text-sm font-semibold">Projects Worked On (Add multiple)</label>
+                      <div className="space-y-2">
+                        {(formData.projects || []).map((project: any, index: number) => (
+                          <div key={index} className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg space-y-2">
+                            <div className="flex justify-between items-start">
+                              <span className="text-xs font-semibold text-gray-500">Project {index + 1}</span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newProjects = [...(formData.projects || [])]
+                                  newProjects.splice(index, 1)
+                                  setFormData({ ...formData, projects: newProjects })
+                                }}
+                                className="text-red-500 hover:text-red-700"
+                              >
+                                <FaTrash className="text-sm" />
+                              </button>
+                            </div>
+                            <input
+                              type="text"
+                              placeholder="Project Name"
+                              value={project.name || ''}
+                              onChange={(e) => {
+                                const newProjects = [...(formData.projects || [])]
+                                newProjects[index] = { ...project, name: e.target.value }
+                                setFormData({ ...formData, projects: newProjects })
+                              }}
+                              className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+                            />
+                            <textarea
+                              placeholder="Project Description"
+                              value={project.description || ''}
+                              onChange={(e) => {
+                                const newProjects = [...(formData.projects || [])]
+                                newProjects[index] = { ...project, description: e.target.value }
+                                setFormData({ ...formData, projects: newProjects })
+                              }}
+                              className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm min-h-[60px]"
+                            />
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newProjects = [...(formData.projects || []), { name: '', description: '' }]
+                            setFormData({ ...formData, projects: newProjects })
+                          }}
+                          className="w-full py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-light dark:hover:border-primary-dark text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark transition-colors flex items-center justify-center space-x-2"
+                        >
+                          <FaPlus className="text-sm" />
+                          <span className="text-sm">Add Project</span>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <textarea
+                      placeholder="Summary / Learning Curve (optional)"
+                      value={formData.summary || formData.learningCurve || ''}
+                      onChange={(e) => setFormData({ ...formData, summary: e.target.value, learningCurve: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[120px]"
+                      placeholder="Describe what you learned, skills gained, and overall experience..."
+                    />
+                  </>
+                )}
+
+                {activeSection !== 'experience' && activeSection !== 'coding-progress' && (
+                  <input
+                    type="text"
+                    placeholder="Title"
+                    value={formData.title || ''}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    required
+                  />
+                )}
 
                 {/* Certification-specific fields */}
                 {activeSection === 'certifications' && (
@@ -1237,6 +1472,121 @@ const Admin = () => {
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[100px]"
                     required
                   />
+                )}
+
+                {/* Project-specific fields */}
+                {activeSection === 'projects' && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Technologies (comma separated, e.g., React, Node.js, MongoDB)"
+                      value={Array.isArray(formData.technologies) ? formData.technologies.join(', ') : formData.technologies || ''}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        technologies: e.target.value.split(',').map((t: string) => t.trim()).filter((t: string) => t)
+                      })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+
+                    {/* Frameworks Multi-Select */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-semibold">Frameworks & Tech Stack (Select multiple)</label>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50 max-h-60 overflow-y-auto">
+                        {[
+                          'Flask', 'Django', 'Node.js', 'Express', 'FastAPI',
+                          'React', 'React Native', 'Next.js', 'Vue.js', 'Angular', 'Vite',
+                          'Spring Boot', 'Java', 'JavaFX',
+                          'Terraform', 
+                          'Scikit-Learn', 'Pandas', 'NumPy', 'TensorFlow', 'PyTorch',
+                          'Tailwind CSS', 'Bootstrap',
+                          'MongoDB', 'PostgreSQL', 'MySQL', 'Redis', 'Firebase',
+                          'MongoDB Atlas', 'Apache Cassandra', 'SQLite',
+                          'GraphQL'
+                        ].map((framework) => (
+                          <label
+                            key={framework}
+                            className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={(formData.frameworks || []).includes(framework)}
+                              onChange={(e) => {
+                                const currentFrameworks = formData.frameworks || []
+                                const newFrameworks = e.target.checked
+                                  ? [...currentFrameworks, framework]
+                                  : currentFrameworks.filter((f: string) => f !== framework)
+                                setFormData({ ...formData, frameworks: newFrameworks })
+                              }}
+                              className="w-4 h-4 text-primary-light dark:text-primary-dark rounded"
+                            />
+                            <span className="text-sm">{framework}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Tools Multi-Select */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-semibold">Tools & IDEs (Select multiple)</label>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50 max-h-60 overflow-y-auto">
+                        {[
+                          'GitHub', 'GitLab', 'Bitbucket', 'Git',
+                          'Docker', 'Kubernetes',
+                          'Jenkins', 'CircleCI', 'Travis CI',
+                          'VS Code', 'IntelliJ IDEA', 'PyCharm', 'WebStorm', 'Android Studio',
+                          'Postman', 'Jira', 'Slack', 'Trello', 'Notion', 'Figma',
+                          'Prometheus', 'Grafana', 'Elasticsearch',
+                          'Apache Kafka', 'RabbitMQ', 'Nginx', 'Apache'
+                        ].map((tool) => (
+                          <label
+                            key={tool}
+                            className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={(formData.tools || []).includes(tool)}
+                              onChange={(e) => {
+                                const currentTools = formData.tools || []
+                                const newTools = e.target.checked
+                                  ? [...currentTools, tool]
+                                  : currentTools.filter((t: string) => t !== tool)
+                                setFormData({ ...formData, tools: newTools })
+                              }}
+                              className="w-4 h-4 text-primary-light dark:text-primary-dark rounded"
+                            />
+                            <span className="text-sm">{tool}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <select
+                      value={formData.status || 'completed'}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      aria-label="Project Status"
+                    >
+                      <option value="completed">Completed</option>
+                      <option value="ongoing">Ongoing</option>
+                      <option value="upcoming">Upcoming</option>
+                    </select>
+
+                    <input
+                      type="url"
+                      placeholder="GitHub URL (optional)"
+                      value={formData.githubUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+
+                    <input
+                      type="url"
+                      placeholder="Live Website/Demo URL (optional)"
+                      value={formData.liveUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                  </>
                 )}
 
                 {/* Cloud Provider field for non-coding-progress items */}

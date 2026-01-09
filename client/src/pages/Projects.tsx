@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getProjects } from '../services/api'
-import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa'
+import { FaGithub, FaExternalLinkAlt, FaSearchPlus } from 'react-icons/fa'
 import CloudLogo from '../components/CloudLogo'
+import FrameworkLogo from '../components/FrameworkLogo'
+import ToolsLogo from '../components/ToolsLogo'
+import ImageModal from '../components/ImageModal'
 
 interface Project {
   _id: string
   title: string
   description: string
   technologies: string[]
+  frameworks?: string[]
+  tools?: string[]
   cloudProvider?: string
   image?: string
   imageUrl?: string
@@ -21,6 +26,7 @@ const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [filter, setFilter] = useState<string>('all')
   const [loading, setLoading] = useState(true)
+  const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null)
 
   useEffect(() => {
     fetchProjects()
@@ -95,11 +101,22 @@ const Projects = () => {
             )}
 
             {(project.imageUrl || project.image) && (
-              <img
-                src={project.imageUrl || project.image}
-                alt={project.title}
-                className="w-full h-48 object-cover rounded-t-lg mb-4"
-              />
+              <div 
+                className="relative cursor-pointer group"
+                onClick={() => setSelectedImage({ 
+                  url: project.imageUrl || project.image || '', 
+                  title: project.title 
+                })}
+              >
+                <img
+                  src={project.imageUrl || project.image}
+                  alt={project.title}
+                  className="w-full h-48 object-cover rounded-t-lg mb-4"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center rounded-t-lg">
+                  <FaSearchPlus className="text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+              </div>
             )}
 
             <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold ${
@@ -125,6 +142,29 @@ const Projects = () => {
                 </span>
               ))}
             </div>
+            {/* Frameworks/Tech Stack with Logos */}
+            {project.frameworks && project.frameworks.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Tech Stack:</p>
+                <div className="flex flex-wrap gap-3">
+                  {project.frameworks.map((framework) => (
+                    <FrameworkLogo key={framework} framework={framework} size="text-2xl" />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tools with Logos */}
+            {project.tools && project.tools.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Tools & IDEs:</p>
+                <div className="flex flex-wrap gap-3">
+                  {project.tools.map((tool) => (
+                    <ToolsLogo key={tool} tool={tool} size="text-2xl" />
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="flex space-x-4 mt-auto">
               {project.githubUrl && (
@@ -159,6 +199,14 @@ const Projects = () => {
           </p>
         </div>
       )}
+
+      {/* Image Modal */}
+      <ImageModal
+        isOpen={selectedImage !== null}
+        onClose={() => setSelectedImage(null)}
+        imageUrl={selectedImage?.url || ''}
+        title={selectedImage?.title || ''}
+      />
     </div>
   )
 }
