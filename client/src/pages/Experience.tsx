@@ -12,6 +12,7 @@ interface Project {
 interface Experience {
   _id: string
   company: string
+  companyLogo?: string
   role: string
   duration: string
   location?: string
@@ -107,10 +108,24 @@ const Experience = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 {/* Left column - Main info */}
                 <div className="md:col-span-2">
-                  <h3 className="text-2xl font-bold mb-2">{exp.role}</h3>
-                  <p className="text-xl text-primary-light dark:text-primary-dark font-semibold mb-3">
-                    {exp.company}
-                  </p>
+                  <div className="flex items-start gap-4 mb-4">
+                    {exp.companyLogo && (
+                      <img
+                        src={exp.companyLogo}
+                        alt={`${exp.company} logo`}
+                        className="w-16 h-16 object-contain rounded-lg bg-white dark:bg-gray-700 p-2 border border-gray-200 dark:border-gray-600"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold mb-2">{exp.role}</h3>
+                      <p className="text-xl text-primary-light dark:text-primary-dark font-semibold mb-3">
+                        {exp.company}
+                      </p>
+                    </div>
+                  </div>
 
                   <div className="flex flex-wrap gap-4 mb-4 text-gray-600 dark:text-gray-400">
                     <div className="flex items-center gap-2">

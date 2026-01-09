@@ -51,12 +51,8 @@ export const deleteCodingProgress = (id: string) => api.delete(`/coding-progress
 
 // Experience
 export const getExperiences = () => api.get('/experience')
-export const createExperience = (data: FormData) => api.post('/experience', data, {
-  headers: { 'Content-Type': 'multipart/form-data' }
-})
-export const updateExperience = (id: string, data: FormData) => api.put(`/experience/${id}`, data, {
-  headers: { 'Content-Type': 'multipart/form-data' }
-})
+export const createExperience = (data: any) => api.post('/experience', data)
+export const updateExperience = (id: string, data: any) => api.put(`/experience/${id}`, data)
 export const deleteExperience = (id: string) => api.delete(`/experience/${id}`)
 
 export default api

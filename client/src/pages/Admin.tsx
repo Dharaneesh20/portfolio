@@ -148,11 +148,17 @@ const Admin = () => {
           toast.success('Project created!')
         }
       } else if (activeSection === 'experience') {
+        // Send as JSON for experience
+        const experienceData = {
+          ...formData,
+          techStack: formData.techStack || [],
+          projects: formData.projects || []
+        }
         if (editingItem) {
-          await updateExperience(editingItem._id, formDataToSend)
+          await updateExperience(editingItem._id, experienceData)
           toast.success('Experience updated!')
         } else {
-          await createExperience(formDataToSend)
+          await createExperience(experienceData)
           toast.success('Experience created!')
         }
       } else if (activeSection === 'certifications') {
@@ -515,8 +521,22 @@ const Admin = () => {
                     transition={{ delay: index * 0.05 }}
                     className="card"
                   >
-                    <h3 className="text-xl font-bold mb-2">{exp.role}</h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-2">{exp.company}</p>
+                    <div className="flex items-start gap-3 mb-3">
+                      {exp.companyLogo && (
+                        <img
+                          src={exp.companyLogo}
+                          alt={`${exp.company} logo`}
+                          className="w-12 h-12 object-contain rounded bg-white dark:bg-gray-700 p-1 border border-gray-200 dark:border-gray-600"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                          }}
+                        />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold mb-1">{exp.role}</h3>
+                        <p className="text-gray-600 dark:text-gray-400 mb-1">{exp.company}</p>
+                      </div>
+                    </div>
                     <p className="text-sm text-gray-500 mb-4">{exp.duration}</p>
                     
                     <div className="flex space-x-2">
@@ -1147,6 +1167,14 @@ const Admin = () => {
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
                       required
+                    />
+                    
+                    <input
+                      type="url"
+                      placeholder="Company Logo URL (optional, e.g., https://logo.clearbit.com/ltts.com)"
+                      value={formData.companyLogo || ''}
+                      onChange={(e) => setFormData({ ...formData, companyLogo: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
                     />
                     
                     <input

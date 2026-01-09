@@ -5,6 +5,9 @@ const experienceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  companyLogo: {
+    type: String,
+  },
   role: {
     type: String,
     required: true,
