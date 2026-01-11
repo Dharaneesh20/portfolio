@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GA Test Page</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9VSP9M24F3B"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9VSP9M24F3B');
+      console.log('✅ Google Analytics initialized');
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #357ae8;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🧪 Google Analytics Test Page</h1>
+        <p><strong>Measurement ID:</strong> G-9VSP9M24F3B</p>
+        
+        <div id="status" class="status info">
+            <strong>Status:</strong> Checking GA setup...
+        </div>
+        
+        <h2>Test Actions</h2>
+        <button onclick="testEvent()">Send Test Event</button>
+        <button onclick="checkDataLayer()">Check DataLayer</button>
+        <button onclick="checkGtag()">Check Gtag Function</button>
+        
+        <h2>Console Output</h2>
+        <pre id="output">Open browser console (F12) to see detailed output...</pre>
+        
+        <h2>How to Verify</h2>
+        <ol>
+            <li>Open this page</li>
+            <li>Open browser DevTools (F12) → Console</li>
+            <li>Click the test buttons above</li>
+            <li>Check Network tab for requests to google-analytics.com</li>
+            <li>Go to GA → Reports → Realtime (should see 1 active user)</li>
+        </ol>
+    </div>
+    
+    <script>
+        // Check GA status on load
+        window.addEventListener('load', function() {
+            setTimeout(checkStatus, 2000);
+        });
+        
+        function checkStatus() {
+            const status = document.getElementById('status');
+            let message = '';
+            
+            if (typeof gtag === 'function') {
+                message = '✅ Google Analytics is loaded and working!';
+                status.className = 'status success';
+            } else {
+                message = '❌ Google Analytics not detected';
+                status.className = 'status error';
+            }
+            
+            if (window.dataLayer && window.dataLayer.length > 0) {
+                message += `\n✅ DataLayer has ${window.dataLayer.length} entries`;
+            }
+            
+            status.innerHTML = `<strong>Status:</strong> ${message}`;
+            
+            // Log to console
+            console.log('GA Check:', {
+                gtagLoaded: typeof gtag === 'function',
+                dataLayerExists: !!window.dataLayer,
+                dataLayerLength: window.dataLayer?.length || 0,
+                dataLayer: window.dataLayer
+            });
+        }
+        
+        function testEvent() {
+            if (typeof gtag === 'function') {
+                gtag('event', 'test_button_click', {
+                    'event_category': 'test',
+                    'event_label': 'GA Test Page',
+                    'value': 1
+                });
+                alert('✅ Test event sent! Check GA Realtime → Events');
+                console.log('Test event sent:', { name: 'test_button_click' });
+            } else {
+                alert('❌ Gtag function not available');
+            }
+        }
+        
+        function checkDataLayer() {
+            const output = document.getElementById('output');
+            output.textContent = JSON.stringify(window.dataLayer, null, 2);
+            console.log('DataLayer:', window.dataLayer);
+        }
+        
+        function checkGtag() {
+            const output = document.getElementById('output');
+            const result = {
+                gtagExists: typeof gtag === 'function',
+                gtagType: typeof gtag,
+                dataLayerExists: !!window.dataLayer,
+                dataLayerLength: window.dataLayer?.length || 0
+            };
+            output.textContent = JSON.stringify(result, null, 2);
+            console.log('Gtag Check:', result);
+        }
+    </script>
+</body>
+</html>
