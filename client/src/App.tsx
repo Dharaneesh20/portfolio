@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
 import { ToastContainer } from 'react-toastify'
@@ -15,7 +14,6 @@ import CV from './pages/CV'
 import Contact from './pages/Contact'
 import Admin from './pages/Admin'
 import CodingProgress from './pages/CodingProgress'
-import { initGA } from './utils/analytics'
 import { usePageTracking } from './hooks/usePageTracking'
 
 function AppContent() {
@@ -55,15 +53,8 @@ function AppContent() {
 }
 
 function App() {
-  useEffect(() => {
-    // Initialize Google Analytics
-    const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
-    if (measurementId && measurementId !== 'G-XXXXXXXXXX') {
-      initGA(measurementId);
-    } else {
-      console.warn('Google Analytics Measurement ID not configured');
-    }
-  }, []);
+  // Google Analytics is initialized in index.html
+  // The tracking events are handled by usePageTracking hook and utility functions
 
   return (
     <ThemeProvider>
