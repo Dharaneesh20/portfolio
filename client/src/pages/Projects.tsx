@@ -6,6 +6,7 @@ import CloudLogo from '../components/CloudLogo'
 import FrameworkLogo from '../components/FrameworkLogo'
 import ToolsLogo from '../components/ToolsLogo'
 import ImageModal from '../components/ImageModal'
+import { trackContentView, trackExternalLink } from '../utils/analytics'
 
 interface Project {
   _id: string
@@ -172,6 +173,7 @@ const Projects = () => {
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackExternalLink(project.githubUrl!, `${project.title} - GitHub`)}
                   className="flex items-center text-primary-light dark:text-primary-dark hover:underline"
                 >
                   <FaGithub className="mr-2" /> Code
@@ -182,6 +184,10 @@ const Projects = () => {
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => {
+                    trackExternalLink(project.liveUrl!, `${project.title} - Live Demo`)
+                    trackContentView('project', project._id, project.title)
+                  }}
                   className="flex items-center text-primary-light dark:text-primary-dark hover:underline"
                 >
                   <FaExternalLinkAlt className="mr-2" /> Live Demo

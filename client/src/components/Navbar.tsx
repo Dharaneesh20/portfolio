@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTheme } from '../context/ThemeContext'
 import { FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa'
+import { trackClick } from '../utils/analytics'
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme()
@@ -40,6 +41,7 @@ const Navbar = () => {
               <Link
                 key={item.name}
                 to={item.path}
+                onClick={() => trackClick(`Nav - ${item.name}`, 'navigation', { location: 'desktop' })}
                 className="text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors"
               >
                 {item.name}
@@ -48,7 +50,10 @@ const Navbar = () => {
             
             {/* Theme Toggle */}
             <button
-              onClick={toggleTheme}
+              onClick={() => {
+                toggleTheme()
+                trackClick('Theme Toggle', 'button', { theme: theme === 'light' ? 'dark' : 'light' })
+              }}
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               aria-label="Toggle theme"
             >
@@ -95,7 +100,10 @@ const Navbar = () => {
                 key={item.name}
                 to={item.path}
                 className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false)
+                  trackClick(`Nav - ${item.name}`, 'navigation', { location: 'mobile' })
+                }}
               >
                 {item.name}
               </Link>

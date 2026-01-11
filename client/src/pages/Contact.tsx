@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { FaEnvelope, FaLinkedin, FaGithub, FaPhone } from 'react-icons/fa'
 import { toast } from 'react-toastify'
+import { trackFormSubmit, trackSocialClick } from '../utils/analytics'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically send the form data to your backend
+    trackFormSubmit('contact_form', true)
     toast.success('Message sent successfully! I\'ll get back to you soon.')
     setFormData({ name: '', email: '', subject: '', message: '' })
   }
@@ -52,6 +54,7 @@ const Contact = () => {
 
           <div className="space-y-6">
             <a
+              onClick={() => trackSocialClick('email', 'click')}
               href="mailto:dharaneesh@example.com"
               className="flex items-center space-x-4 text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors"
             >
@@ -67,6 +70,7 @@ const Contact = () => {
             <a
               href="https://www.linkedin.com/in/dharaneeshrs-clouddev/"
               target="_blank"
+              onClick={() => trackSocialClick('linkedin', 'click')}
               rel="noopener noreferrer"
               className="flex items-center space-x-4 text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors"
             >
@@ -82,6 +86,7 @@ const Contact = () => {
             <a
               href="https://github.com/Dharaneesh20"
               target="_blank"
+              onClick={() => trackSocialClick('github', 'click')}
               rel="noopener noreferrer"
               className="flex items-center space-x-4 text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors"
             >

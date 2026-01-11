@@ -4,6 +4,7 @@ import { getCV } from '../services/api'
 import { FaBriefcase, FaGraduationCap, FaCode, FaAward, FaDownload, FaFilePdf } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import jsPDF from 'jspdf'
+import { trackDownload } from '../utils/analytics'
 
 interface Experience {
   title: string
@@ -60,6 +61,7 @@ const CV = () => {
     if (!cvData) return
 
     try {
+      trackDownload('cv_text_file', 'txt')
       // Create a formatted text version of the CV
       let cvText = `${cvData.name}\n${cvData.title}\n\n`
       cvText += `SUMMARY\n${cvData.summary}\n\n`
@@ -116,6 +118,7 @@ const CV = () => {
   const handleDownloadPDF = () => {
     if (!cvData) return
 
+    trackDownload('cv_pdf_file', 'pdf')
     try {
       const doc = new jsPDF()
       let yPosition = 20
