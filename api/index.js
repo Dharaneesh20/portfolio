@@ -10,6 +10,7 @@ import blogRoutes from '../server/routes/blog.js'
 import cvRoutes from '../server/routes/cv.js'
 import codingProgressRoutes from '../server/routes/codingProgress.js'
 import experienceRoutes from '../server/routes/experience.js'
+import githubRoutes from '../server/routes/github.js'
 
 const app = express()
 
@@ -29,6 +30,7 @@ app.use('/api/blog', blogRoutes)
 app.use('/api/cv', cvRoutes)
 app.use('/api/coding-progress', codingProgressRoutes)
 app.use('/api/experience', experienceRoutes)
+app.use('/api/github', githubRoutes)
 
 // Health check route
 app.get('/api/health', (req, res) => {
