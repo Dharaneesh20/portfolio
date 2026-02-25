@@ -9,16 +9,22 @@
     "start": "node index.js",
     "seed": "node seed.js"
   },
-  "keywords": ["express", "mongodb", "api"],
+  "keywords": [
+    "express",
+    "mongodb",
+    "api"
+  ],
   "author": "Dharaneesh RS",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "mongoose": "^8.0.3",
+    "axios": "^1.13.5",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.3",
+    "mongoose": "^8.0.3",
     "multer": "^1.4.5-lts.1",
-    "express-fileupload": "^1.4.3"
+    "node-cron": "^4.2.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

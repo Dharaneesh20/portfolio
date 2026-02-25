@@ -12,7 +12,9 @@ import {
   FaTimes,
   FaSignOutAlt,
   FaCode,
-  FaBriefcase
+  FaBriefcase,
+  FaGithub,
+  FaSync
 } from 'react-icons/fa'
 import { 
   getProjects, 
@@ -36,10 +38,12 @@ import {
   getCodingProgress,
   createCodingProgress,
   updateCodingProgress,
-  deleteCodingProgress
+  deleteCodingProgress,
+  getGitHubStats,
+  syncGitHubStats
 } from '../services/api'
 
-type Section = 'dashboard' | 'projects' | 'experience' | 'certifications' | 'blog' | 'cv' | 'coding-progress'
+type Section = 'dashboard' | 'projects' | 'experience' | 'certifications' | 'blog' | 'cv' | 'coding-progress' | 'github'
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -51,6 +55,8 @@ const Admin = () => {
   const [blogPosts, setBlogPosts] = useState<any[]>([])
   const [cvData, setCvData] = useState<any>(null)
   const [codingProgress, setCodingProgress] = useState<any[]>([])
+  const [githubStats, setGithubStats] = useState<any>(null)
+  const [githubSyncing, setGithubSyncing] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [editingItem, setEditingItem] = useState<any>(null)
   const [formData, setFormData] = useState<any>({})
@@ -81,6 +87,13 @@ const Admin = () => {
       } else if (activeSection === 'coding-progress') {
         const res = await getCodingProgress()
         setCodingProgress(res.data)
+      } else if (activeSection === 'github') {
+        try {
+          const res = await getGitHubStats()
+          setGithubStats(res.data)
+        } catch {
+          setGithubStats(null)
+        }
       }
     } catch (error) {
       console.error('Error loading data:', error)
@@ -342,6 +355,14 @@ const Admin = () => {
       desc: 'Update platform stats',
       color: 'from-yellow-500 to-amber-500',
       count: codingProgress.length
+    },
+    { 
+      id: 'github', 
+      icon: FaGithub, 
+      title: 'GitHub Stats', 
+      desc: 'Sync GitHub stats',
+      color: 'from-gray-600 to-gray-800',
+      count: githubStats ? 1 : 0
     },
   ]
 
@@ -1704,6 +1725,110 @@ const Admin = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+        {/* GitHub Stats Management */}
+        {activeSection === 'github' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setActiveSection('dashboard')}
+                className="text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark"
+              >
+                ← Back to Dashboard
+              </button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={githubSyncing}
+                onClick={async () => {
+                  setGithubSyncing(true)
+                  try {
+                    await syncGitHubStats()
+                    toast.success('GitHub stats synced successfully!')
+                    const res = await getGitHubStats()
+                    setGithubStats(res.data)
+                  } catch {
+                    toast.error('Failed to sync GitHub stats')
+                  } finally {
+                    setGithubSyncing(false)
+                  }
+                }}
+                className="btn-primary flex items-center space-x-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <FaSync className={githubSyncing ? 'animate-spin' : ''} />
+                <span>{githubSyncing ? 'Syncing...' : 'Manual Sync'}</span>
+              </motion.button>
+            </div>
+
+            {githubStats ? (
+              <div className="card max-w-2xl mx-auto">
+                <div className="flex items-center gap-4 mb-6">
+                  {githubStats.avatarUrl && (
+                    <img
+                      src={githubStats.avatarUrl}
+                      alt={githubStats.username}
+                      className="w-16 h-16 rounded-full border-2 border-gray-300 dark:border-gray-600"
+                    />
+                  )}
+                  <div>
+                    <h3 className="text-xl font-bold">{githubStats.name || githubStats.username}</h3>
+                    <p className="text-gray-500 dark:text-gray-400">@{githubStats.username}</p>
+                    {githubStats.bio && (
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{githubStats.bio}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                  {[
+                    { label: 'Public Repos', value: githubStats.publicRepos },
+                    { label: 'Followers', value: githubStats.followers },
+                    { label: 'Following', value: githubStats.following },
+                    { label: 'Total Stars', value: githubStats.totalStars },
+                    { label: 'Total Forks', value: githubStats.totalForks },
+                    { label: 'Gists', value: githubStats.publicGists },
+                  ].map((stat) => (
+                    <div key={stat.label} className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 text-center">
+                      <p className="text-xl font-bold text-primary-light dark:text-primary-dark">{stat.value}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {githubStats.topLanguages && githubStats.topLanguages.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Top Languages:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {githubStats.topLanguages.map((l: any) => (
+                        <span
+                          key={l.language}
+                          className="px-3 py-1 text-xs font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 rounded-full"
+                        >
+                          {l.language} ({l.count})
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <p className="text-xs text-gray-400 mt-4">
+                  Last synced: {githubStats.fetchedAt ? new Date(githubStats.fetchedAt).toLocaleString() : 'Never'}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Auto-sync runs 3 times daily at 00:00, 08:00, and 16:00.
+                </p>
+              </div>
+            ) : (
+              <div className="card max-w-2xl mx-auto text-center py-12">
+                <FaGithub className="text-6xl text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400 mb-4">
+                  No GitHub stats cached yet. Click "Manual Sync" to fetch now.
+                </p>
+              </div>
+            )}
+          </motion.div>
+        )}
     </div>
   )
 }

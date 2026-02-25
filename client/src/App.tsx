@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import Projects from './pages/Projects'
 import Experience from './pages/Experience'
 import Certifications from './pages/Certifications'
+import GitHub from './pages/GitHub'
 import Blog from './pages/Blog'
 import CV from './pages/CV'
 import Contact from './pages/Contact'
@@ -28,6 +29,7 @@ function AppContent() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/experience" element={<Experience />} />
           <Route path="/certifications" element={<Certifications />} />
+          <Route path="/github" element={<GitHub />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/cv" element={<CV />} />
           <Route path="/contact" element={<Contact />} />
