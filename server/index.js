@@ -13,7 +13,7 @@ import cvRoutes from './routes/cv.js'
 import codingProgressRoutes from './routes/codingProgress.js'
 import experienceRoutes from './routes/experience.js'
 import githubRoutes, { fetchAndCacheGitHubStats } from './routes/github.js'
-import insightRoutes from './routes/insights.js'
+import insightRoutes, { migrateInsights } from './routes/insights.js'
 import kpiRoutes, { seedKpis } from './routes/kpis.js'
 
 
@@ -58,6 +58,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio
   .then(async () => {
     console.log('Connected to MongoDB')
     await seedKpis()
+    await migrateInsights()
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`)
     })

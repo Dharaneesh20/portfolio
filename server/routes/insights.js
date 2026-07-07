@@ -123,4 +123,16 @@ router.delete('/:id', async (req, res) => {
   }
 })
 
+export const migrateInsights = async () => {
+  try {
+    const result = await Insight.updateMany({ displayOrder: { $exists: false } }, { $set: { displayOrder: 999 } })
+    if (result.modifiedCount > 0) {
+      console.log(`Migrated ${result.modifiedCount} insights with default displayOrder 999`)
+    }
+  } catch (error) {
+    console.error('Error migrating insights:', error)
+  }
+}
+
 export default router
+

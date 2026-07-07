@@ -11,7 +11,7 @@ import cvRoutes from '../server/routes/cv.js'
 import codingProgressRoutes from '../server/routes/codingProgress.js'
 import experienceRoutes from '../server/routes/experience.js'
 import githubRoutes from '../server/routes/github.js'
-import insightRoutes from '../server/routes/insights.js'
+import insightRoutes, { migrateInsights } from '../server/routes/insights.js'
 import kpiRoutes, { seedKpis } from '../server/routes/kpis.js'
 
 
@@ -57,6 +57,7 @@ const connectDB = async () => {
     isConnected = true
     console.log('Connected to MongoDB')
     await seedKpis()
+    await migrateInsights()
   } catch (error) {
     console.error('MongoDB connection error:', error)
   }
