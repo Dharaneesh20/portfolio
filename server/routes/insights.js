@@ -8,7 +8,7 @@ router.get('/recent', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 3
     const insights = await Insight.find({ status: 'published' })
-      .sort({ publishedAt: -1, createdAt: -1 })
+      .sort({ displayOrder: 1, publishedAt: -1, createdAt: -1 })
       .limit(limit)
     res.json(insights)
   } catch (error) {
@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
     if (req.query.status !== 'all') {
       filter.status = 'published'
     }
-    const insights = await Insight.find(filter).sort({ publishedAt: -1, createdAt: -1 })
+    const insights = await Insight.find(filter).sort({ displayOrder: 1, publishedAt: -1, createdAt: -1 })
     res.json(insights)
   } catch (error) {
     res.status(500).json({ message: error.message })

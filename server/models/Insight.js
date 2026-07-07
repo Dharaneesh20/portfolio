@@ -46,6 +46,10 @@ const insightSchema = new mongoose.Schema({
   publishedAt: {
     type: Date,
     default: Date.now,
+  },
+  displayOrder: {
+    type: Number,
+    default: 999
   }
 }, {
   timestamps: true

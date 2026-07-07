@@ -240,7 +240,8 @@ const Admin = () => {
           status: formData.status || 'published',
           featured: formData.featured === 'true' || formData.featured === true,
           readTime: formData.readTime || '3 min read',
-          publishedAt: formData.publishedAt || new Date().toISOString()
+          publishedAt: formData.publishedAt || new Date().toISOString(),
+          displayOrder: parseInt(formData.displayOrder) || 999
         }
         if (editingItem) {
           await updateInsight(editingItem._id, insightData)
@@ -869,6 +870,9 @@ const Admin = () => {
                               Featured
                             </span>
                           )}
+                          <span className="text-[10px] bg-gray-150 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded font-mono font-bold">
+                            Order: {insight.displayOrder !== undefined ? insight.displayOrder : 999}
+                          </span>
                         </div>
                         <p className="text-sm text-gray-550 dark:text-gray-400 mb-2">{insight.excerpt}</p>
                         <p className="text-xs text-gray-500">
@@ -1965,6 +1969,14 @@ const Admin = () => {
                       placeholder="Slug (optional, e.g., my-first-update)"
                       value={formData.slug || ''}
                       onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    
+                    <input
+                      type="number"
+                      placeholder="Display Order (e.g. 1, 2, 3 - lower numbers float to top)"
+                      value={formData.displayOrder || ''}
+                      onChange={(e) => setFormData({ ...formData, displayOrder: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
                     />
                     

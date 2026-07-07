@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getCV } from '../services/api'
-import { FaBriefcase, FaGraduationCap, FaCode, FaAward, FaDownload, FaFilePdf } from 'react-icons/fa'
+import { FaBriefcase, FaGraduationCap, FaCode, FaAward, FaFilePdf } from 'react-icons/fa'
 import { toast } from 'react-toastify'
-import jsPDF from 'jspdf'
 import { trackDownload } from '../utils/analytics'
 
 interface Experience {
@@ -57,63 +56,7 @@ const CV = () => {
     }
   }
 
-  const handleDownloadCV = () => {
-    if (!cvData) return
 
-    try {
-      trackDownload('cv_text_file', 'txt')
-      // Create a formatted text version of the CV
-      let cvText = `${cvData.name}\n${cvData.title}\n\n`
-      cvText += `SUMMARY\n${cvData.summary}\n\n`
-      
-      if (cvData.experience && cvData.experience.length > 0) {
-        cvText += `EXPERIENCE\n`
-        cvData.experience.forEach((exp: Experience) => {
-          cvText += `\n${exp.title} at ${exp.company}\n${exp.period}\n`
-          exp.description.forEach((desc: string) => cvText += `• ${desc}\n`)
-        })
-        cvText += '\n'
-      }
-      
-      if (cvData.education && cvData.education.length > 0) {
-        cvText += `EDUCATION\n`
-        cvData.education.forEach((edu: Education) => {
-          cvText += `${edu.degree}\n${edu.institution}, ${edu.year}\n\n`
-        })
-      }
-      
-      if (cvData.skills && cvData.skills.length > 0) {
-        cvText += `SKILLS\n`
-        cvData.skills.forEach((skill: Skill) => {
-          cvText += `${skill.category}: ${skill.items.join(', ')}\n`
-        })
-        cvText += '\n'
-      }
-      
-      if (cvData.achievements && cvData.achievements.length > 0) {
-        cvText += `ACHIEVEMENTS\n`
-        cvData.achievements.forEach((achievement: string) => {
-          cvText += `• ${achievement}\n`
-        })
-      }
-
-      // Create and download the file
-      const blob = new Blob([cvText], { type: 'text/plain' })
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `${cvData.name.replace(/\s+/g, '_')}_CV.txt`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(url)
-
-      toast.success('CV downloaded successfully!')
-    } catch (error) {
-      console.error('Error downloading CV:', error)
-      toast.error('Failed to download CV')
-    }
-  }
 
   const handleDownloadPDF = () => {
     trackDownload('cv_pdf_file', 'pdf')
@@ -156,10 +99,6 @@ const CV = () => {
             <button className="btn-primary flex items-center" onClick={handleDownloadPDF}>
               <FaFilePdf className="mr-2" />
               Download PDF
-            </button>
-            <button className="btn-secondary flex items-center" onClick={handleDownloadCV}>
-              <FaDownload className="mr-2" />
-              Download Text
             </button>
           </div>
         </div>
