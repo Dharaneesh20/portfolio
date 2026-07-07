@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getCV } from '../services/api'
-import { FaBriefcase, FaGraduationCap, FaCode, FaAward, FaFilePdf } from 'react-icons/fa'
+import { FaBriefcase, FaGraduationCap, FaCode, FaAward, FaFilePdf, FaCopy } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { trackDownload } from '../utils/analytics'
 
@@ -41,6 +41,7 @@ interface CVData {
 const CV = () => {
   const [cvData, setCvData] = useState<CVData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     fetchCV()
@@ -61,6 +62,20 @@ const CV = () => {
     trackDownload('cv_pdf_file', 'pdf')
     const link = cvData?.pdfUrl || 'https://drive.google.com/file/d/1T5iDRFLyTJds4ol9BNYWziVw9GwzrDVL/view'
     window.open(link, '_blank')
+  }
+
+  const handleCopyLink = () => {
+    const link = cvData?.pdfUrl || 'https://drive.google.com/file/d/1T5iDRFLyTJds4ol9BNYWziVw9GwzrDVL/view'
+    navigator.clipboard.writeText(link)
+      .then(() => {
+        setCopied(true)
+        toast.success('CV Link copied to clipboard!')
+        setTimeout(() => setCopied(false), 2000)
+      })
+      .catch((err) => {
+        console.error('Failed to copy link: ', err)
+        toast.error('Failed to copy link')
+      })
   }
 
 
@@ -99,6 +114,10 @@ const CV = () => {
             <button className="btn-primary flex items-center" onClick={handleDownloadPDF}>
               <FaFilePdf className="mr-2" />
               Download CV
+            </button>
+            <button className="btn-secondary flex items-center shadow-sm" onClick={handleCopyLink}>
+              <FaCopy className="mr-2" />
+              {copied ? 'Copied!' : 'Copy Link'}
             </button>
           </div>
         </div>
