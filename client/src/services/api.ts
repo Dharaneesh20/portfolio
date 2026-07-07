@@ -59,4 +59,43 @@ export const deleteExperience = (id: string) => api.delete(`/experience/${id}`)
 export const getGitHubStats = () => api.get('/github/stats')
 export const syncGitHubStats = () => api.post('/github/sync')
 
+// Insights
+export const getInsights = () => api.get('/insights')
+export const getRecentInsights = (limit = 3) => api.get('/insights/recent', { params: { limit } })
+export const getAllInsightsAdmin = () => api.get('/insights', { params: { status: 'all' } })
+export const createInsight = (data: any) => api.post('/insights', data)
+export const updateInsight = (id: string, data: any) => api.put(`/insights/${id}`, data)
+export const deleteInsight = (id: string) => api.delete(`/insights/${id}`)
+
+// Recent Projects & Certifications
+export const getRecentProjects = (limit = 3) => api.get('/projects/recent', { params: { limit } })
+export const getRecentCertifications = (limit = 3) => api.get('/certifications/recent', { params: { limit } })
+
+// KPIs / Dashboard Metrics
+export const getKpis = () => api.get('/dashboard/kpis')
+export const getAdminKpis = () => api.get('/admin/dashboard/kpis')
+export const createKpi = (data: any) => api.post('/admin/dashboard/kpis', data)
+export const updateKpi = (id: string, data: any) => api.put(`/admin/dashboard/kpis/${id}`, data)
+export const deleteKpi = (id: string) => api.delete(`/admin/dashboard/kpis/${id}`)
+
+
+
+export const resolveImage = (path?: string) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  const cleanPath = path.replace(/\\/g, '/');
+  
+  // Resolve absolute path relative to production API if hosted separately
+  const apiBase = import.meta.env.VITE_API_URL || '';
+  if (apiBase.startsWith('http://') || apiBase.startsWith('https://')) {
+    const serverUrl = apiBase.replace(/\/api\/?$/, '');
+    const formattedPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+    return `${serverUrl}${formattedPath}`;
+  }
+  
+  return cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+};
+
 export default api
+
+

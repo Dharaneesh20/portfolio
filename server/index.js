@@ -13,6 +13,10 @@ import cvRoutes from './routes/cv.js'
 import codingProgressRoutes from './routes/codingProgress.js'
 import experienceRoutes from './routes/experience.js'
 import githubRoutes, { fetchAndCacheGitHubStats } from './routes/github.js'
+import insightRoutes from './routes/insights.js'
+import kpiRoutes, { seedKpis } from './routes/kpis.js'
+
+
 
 dotenv.config()
 
@@ -39,6 +43,10 @@ app.use('/api/cv', cvRoutes)
 app.use('/api/coding-progress', codingProgressRoutes)
 app.use('/api/experience', experienceRoutes)
 app.use('/api/github', githubRoutes)
+app.use('/api/insights', insightRoutes)
+app.use('/api', kpiRoutes)
+
+
 
 // Health check route
 app.get('/api/health', (req, res) => {
@@ -47,8 +55,9 @@ app.get('/api/health', (req, res) => {
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio')
-  .then(() => {
+  .then(async () => {
     console.log('Connected to MongoDB')
+    await seedKpis()
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`)
     })

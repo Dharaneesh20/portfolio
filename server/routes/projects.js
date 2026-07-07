@@ -4,15 +4,32 @@ import path from 'path'
 
 const router = express.Router()
 
-// Get all projects
-router.get('/', async (req, res) => {
+// Get recent projects
+router.get('/recent', async (req, res) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 })
+    const limit = parseInt(req.query.limit) || 3
+    const projects = await Project.find().sort({ createdAt: -1 }).limit(limit)
     res.json(projects)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 })
+
+// Get all projects
+router.get('/', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit)
+    let query = Project.find().sort({ createdAt: -1 })
+    if (limit) {
+      query = query.limit(limit)
+    }
+    const projects = await query
+    res.json(projects)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+})
+
 
 // Get single project
 router.get('/:id', async (req, res) => {

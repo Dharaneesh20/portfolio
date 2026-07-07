@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { getProjects } from '../services/api'
+import { getProjects, resolveImage } from '../services/api'
 import { FaGithub, FaExternalLinkAlt, FaSearchPlus } from 'react-icons/fa'
 import CloudLogo from '../components/CloudLogo'
 import FrameworkLogo from '../components/FrameworkLogo'
@@ -105,12 +105,12 @@ const Projects = () => {
               <div 
                 className="relative cursor-pointer group"
                 onClick={() => setSelectedImage({ 
-                  url: project.imageUrl || project.image || '', 
+                  url: resolveImage(project.imageUrl || project.image), 
                   title: project.title 
                 })}
               >
                 <img
-                  src={project.imageUrl || project.image}
+                  src={resolveImage(project.imageUrl || project.image)}
                   alt={project.title}
                   className="w-full h-48 object-cover rounded-t-lg mb-4"
                 />

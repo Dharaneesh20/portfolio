@@ -14,7 +14,8 @@ import {
   FaCode,
   FaBriefcase,
   FaGithub,
-  FaSync
+  FaSync,
+  FaChartBar
 } from 'react-icons/fa'
 import { 
   getProjects, 
@@ -40,10 +41,18 @@ import {
   updateCodingProgress,
   deleteCodingProgress,
   getGitHubStats,
-  syncGitHubStats
+  syncGitHubStats,
+  createInsight,
+  updateInsight,
+  deleteInsight,
+  getAllInsightsAdmin,
+  getAdminKpis,
+  createKpi,
+  updateKpi,
+  deleteKpi
 } from '../services/api'
 
-type Section = 'dashboard' | 'projects' | 'experience' | 'certifications' | 'blog' | 'cv' | 'coding-progress' | 'github'
+type Section = 'dashboard' | 'projects' | 'experience' | 'certifications' | 'blog' | 'cv' | 'coding-progress' | 'github' | 'insights' | 'kpis'
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -53,6 +62,8 @@ const Admin = () => {
   const [experiences, setExperiences] = useState<any[]>([])
   const [certifications, setCertifications] = useState<any[]>([])
   const [blogPosts, setBlogPosts] = useState<any[]>([])
+  const [insights, setInsights] = useState<any[]>([])
+  const [kpis, setKpis] = useState<any[]>([])
   const [cvData, setCvData] = useState<any>(null)
   const [codingProgress, setCodingProgress] = useState<any[]>([])
   const [githubStats, setGithubStats] = useState<any>(null)
@@ -69,7 +80,24 @@ const Admin = () => {
 
   const loadData = async () => {
     try {
-      if (activeSection === 'projects') {
+      if (activeSection === 'dashboard') {
+        const [projRes, expRes, certRes, blogRes, codeRes, insRes, kpiRes] = await Promise.all([
+          getProjects(),
+          getExperiences(),
+          getCertifications(),
+          getBlogPosts(),
+          getCodingProgress(),
+          getAllInsightsAdmin(),
+          getAdminKpis()
+        ])
+        setProjects(projRes.data)
+        setExperiences(expRes.data)
+        setCertifications(certRes.data)
+        setBlogPosts(blogRes.data)
+        setCodingProgress(codeRes.data)
+        setInsights(insRes.data)
+        setKpis(kpiRes.data)
+      } else if (activeSection === 'projects') {
         const res = await getProjects()
         setProjects(res.data)
       } else if (activeSection === 'experience') {
@@ -81,6 +109,12 @@ const Admin = () => {
       } else if (activeSection === 'blog') {
         const res = await getBlogPosts()
         setBlogPosts(res.data)
+      } else if (activeSection === 'insights') {
+        const res = await getAllInsightsAdmin()
+        setInsights(res.data)
+      } else if (activeSection === 'kpis') {
+        const res = await getAdminKpis()
+        setKpis(res.data)
       } else if (activeSection === 'cv') {
         const res = await getCV()
         setCvData(res.data)
@@ -99,6 +133,7 @@ const Admin = () => {
       console.error('Error loading data:', error)
     }
   }
+
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -130,7 +165,9 @@ const Admin = () => {
       else if (type === 'experience') await deleteExperience(id)
       else if (type === 'certification') await deleteCertification(id)
       else if (type === 'blog') await deleteBlogPost(id)
+      else if (type === 'insight') await deleteInsight(id)
       else if (type === 'coding-progress') await deleteCodingProgress(id)
+      else if (type === 'kpi') await deleteKpi(id)
       
       toast.success('Deleted successfully!')
       loadData()
@@ -138,6 +175,7 @@ const Admin = () => {
       toast.error('Error deleting item')
     }
   }
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -190,6 +228,27 @@ const Admin = () => {
           await createBlogPost(formDataToSend)
           toast.success('Blog post created!')
         }
+      } else if (activeSection === 'insights') {
+        const insightData = {
+          title: formData.title,
+          slug: formData.slug || formData.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || '',
+          excerpt: formData.excerpt,
+          content: formData.content,
+          category: formData.category || 'learning',
+          tags: Array.isArray(formData.tags) ? formData.tags : (formData.tags ? formData.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t) : []),
+          coverImage: formData.coverImage || '',
+          status: formData.status || 'published',
+          featured: formData.featured === 'true' || formData.featured === true,
+          readTime: formData.readTime || '3 min read',
+          publishedAt: formData.publishedAt || new Date().toISOString()
+        }
+        if (editingItem) {
+          await updateInsight(editingItem._id, insightData)
+          toast.success('Insight updated!')
+        } else {
+          await createInsight(insightData)
+          toast.success('Insight created!')
+        }
       } else if (activeSection === 'coding-progress') {
         // Clean up the data - map field names to match backend model
         const cleanData = {
@@ -218,7 +277,23 @@ const Admin = () => {
           await createCodingProgress(cleanData)
           toast.success('Coding progress created!')
         }
+      } else if (activeSection === 'kpis') {
+        const kpiData = {
+          title: formData.title,
+          value: formData.value,
+          subtitle: formData.subtitle,
+          displayOrder: parseInt(formData.displayOrder) || 0,
+          isActive: formData.isActive !== false
+        }
+        if (editingItem) {
+          await updateKpi(editingItem._id, kpiData)
+          toast.success('KPI updated!')
+        } else {
+          await createKpi(kpiData)
+          toast.success('KPI created!')
+        }
       }
+
 
       setShowModal(false)
       loadData()
@@ -341,6 +416,14 @@ const Admin = () => {
       count: blogPosts.length
     },
     { 
+      id: 'insights', 
+      icon: FaFileAlt, 
+      title: 'Insights', 
+      desc: 'Manage updates feed',
+      color: 'from-emerald-500 to-teal-500',
+      count: insights.length
+    },
+    { 
       id: 'cv', 
       icon: FaFileAlt, 
       title: 'CV', 
@@ -364,7 +447,16 @@ const Admin = () => {
       color: 'from-gray-600 to-gray-800',
       count: githubStats ? 1 : 0
     },
+    { 
+      id: 'kpis', 
+      icon: FaChartBar, 
+      title: 'Dashboard KPIs', 
+      desc: 'Manage home stats/metrics',
+      color: 'from-teal-500 to-emerald-500',
+      count: kpis.length
+    },
   ]
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -727,7 +819,171 @@ const Admin = () => {
           </motion.div>
         )}
 
+        {/* Insights Management */}
+        {activeSection === 'insights' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setActiveSection('dashboard')}
+                className="text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark"
+              >
+                ← Back to Dashboard
+              </button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAdd}
+                className="btn-primary flex items-center space-x-2"
+              >
+                <FaPlus />
+                <span>Add Insight</span>
+              </motion.button>
+            </div>
+
+            <div className="space-y-4">
+              <AnimatePresence>
+                {insights.map((insight, index) => (
+                  <motion.div
+                    key={insight._id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="card"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-xl font-bold">{insight.title}</h3>
+                          <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold ${
+                            insight.status === 'published' ? 'bg-green-150 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-150 text-yellow-750 dark:bg-yellow-900/30 dark:text-yellow-400'
+                          }`}>
+                            {insight.status}
+                          </span>
+                          {insight.featured && (
+                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-purple-150 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                              Featured
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-550 dark:text-gray-400 mb-2">{insight.excerpt}</p>
+                        <p className="text-xs text-gray-500">
+                          {insight.category?.toUpperCase()} • {new Date(insight.publishedAt || insight.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                      
+                      <div className="flex space-x-2 ml-4">
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleEdit(insight)}
+                          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                        >
+                          <FaEdit />
+                        </motion.button>
+                        
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleDelete(insight._id, 'insight')}
+                          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        >
+                          <FaTrash />
+                        </motion.button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+
+        {/* KPIs Management */}
+        {activeSection === 'kpis' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setActiveSection('dashboard')}
+                className="text-gray-605 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark font-medium"
+              >
+                ← Back to Dashboard
+              </button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAdd}
+                className="btn-primary flex items-center space-x-2"
+              >
+                <FaPlus />
+                <span>Add KPI</span>
+              </motion.button>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <AnimatePresence>
+                {kpis && kpis.map((kpi, index) => (
+                  <motion.div
+                    key={kpi._id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="card flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className={`px-2 py-0.5 text-xs font-bold uppercase rounded ${
+                          kpi.isActive ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-650'
+                        }`}>
+                          {kpi.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-450 font-bold">
+                          Order: {kpi.displayOrder}
+                        </span>
+                      </div>
+                      <h3 className="text-3xl font-black mb-1 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">{kpi.value}</h3>
+                      <p className="font-bold text-gray-900 dark:text-gray-150 mb-1">{kpi.title}</p>
+                      <p className="text-xs text-gray-650 dark:text-gray-400 mb-4">{kpi.subtitle}</p>
+                    </div>
+                    
+                    <div className="flex space-x-2 border-t border-gray-100 dark:border-gray-800/80 pt-3">
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleEdit(kpi)}
+                        className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center space-x-2 text-sm"
+                      >
+                        <FaEdit />
+                        <span>Edit</span>
+                      </motion.button>
+                      
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleDelete(kpi._id, 'kpi')}
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm flex items-center justify-center"
+                      >
+                        <FaTrash />
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+
         {activeSection === 'cv' && (
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1505,8 +1761,8 @@ const Admin = () => {
                   </>
                 )}
 
-                {/* Description field for non-blog items */}
-                {activeSection !== 'blog' && activeSection !== 'coding-progress' && (
+                {/* Description field for non-blog, non-insight items */}
+                {activeSection !== 'blog' && activeSection !== 'insights' && activeSection !== 'coding-progress' && (
                   <textarea
                     placeholder="Description"
                     value={formData.description || ''}
@@ -1515,6 +1771,7 @@ const Admin = () => {
                     required
                   />
                 )}
+
 
                 {/* Project-specific fields */}
                 {activeSection === 'projects' && (
@@ -1631,8 +1888,8 @@ const Admin = () => {
                   </>
                 )}
 
-                {/* Cloud Provider field for non-coding-progress items */}
-                {activeSection !== 'coding-progress' && (
+                {/* Cloud Provider field for non-coding-progress, non-insight, non-kpi items */}
+                {activeSection !== 'coding-progress' && activeSection !== 'insights' && activeSection !== 'kpis' && (
                   <select
                     value={formData.cloudProvider || ''}
                     onChange={(e) => setFormData({ ...formData, cloudProvider: e.target.value })}
@@ -1653,8 +1910,8 @@ const Admin = () => {
                   </select>
                 )}
 
-                {/* Image Options - not for coding progress */}
-                {activeSection !== 'coding-progress' && (
+                {/* Image Options - not for coding progress, insights, or kpis */}
+                {activeSection !== 'coding-progress' && activeSection !== 'insights' && activeSection !== 'kpis' && (
                   <div className="space-y-4">
                     <label className="block text-sm font-semibold">Image</label>
                     
@@ -1698,6 +1955,140 @@ const Admin = () => {
                     />
                   </div>
                   </div>
+                )}
+
+                {/* Insights-specific fields */}
+                {activeSection === 'insights' && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Slug (optional, e.g., my-first-update)"
+                      value={formData.slug || ''}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    
+                    <select
+                      value={formData.category || 'learning'}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      aria-label="Category"
+                    >
+                      <option value="learning">Learning</option>
+                      <option value="project-update">Project Update</option>
+                      <option value="certification">Certification</option>
+                      <option value="achievement">Achievement/Milestone</option>
+                      <option value="writeup">Writeup</option>
+                      <option value="career">Career Update</option>
+                      <option value="event">Event</option>
+                    </select>
+
+                    <input
+                      type="text"
+                      placeholder="Read Time (e.g., 3 min read)"
+                      value={formData.readTime || ''}
+                      onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Tags (comma separated, e.g., security, networking)"
+                      value={Array.isArray(formData.tags) ? formData.tags.join(', ') : formData.tags || ''}
+                      onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+
+                    <input
+                      type="url"
+                      placeholder="Cover Image URL (optional)"
+                      value={formData.coverImage || ''}
+                      onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+
+                    <select
+                      value={formData.status || 'published'}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      aria-label="Status"
+                    >
+                      <option value="published">Published</option>
+                      <option value="draft">Draft</option>
+                    </select>
+
+                    <label className="flex items-center space-x-2 cursor-pointer p-2 rounded">
+                      <input
+                        type="checkbox"
+                        checked={formData.featured || false}
+                        onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                        className="w-4 h-4 text-primary-light dark:text-primary-dark rounded"
+                      />
+                      <span className="text-sm font-semibold">Featured / Pin to top</span>
+                    </label>
+
+                    <textarea
+                      placeholder="Excerpt (Brief summary) *"
+                      value={formData.excerpt || ''}
+                      onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[80px]"
+                      required
+                    />
+
+                    <textarea
+                      placeholder="Content (Full details) *"
+                      value={formData.content || ''}
+                      onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[200px]"
+                      required
+                    />
+                  </>
+                )}
+
+                {/* KPI-specific fields */}
+                {activeSection === 'kpis' && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="KPI Title (e.g. Projects Built) *"
+                      value={formData.title || ''}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="KPI Value (e.g. 10+) *"
+                      value={formData.value || ''}
+                      onChange={(e) => setFormData({ ...formData, value: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="KPI Subtitle/Description (e.g. MERN & Full-stack) *"
+                      value={formData.subtitle || ''}
+                      onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      required
+                    />
+                    <input
+                      type="number"
+                      placeholder="Display Order (e.g. 1, 2, 3)"
+                      value={formData.displayOrder || ''}
+                      onChange={(e) => setFormData({ ...formData, displayOrder: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    />
+                    <label className="flex items-center space-x-2 cursor-pointer p-2 rounded">
+                      <input
+                        type="checkbox"
+                        checked={formData.isActive !== false}
+                        onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                        className="w-4 h-4 text-primary-light dark:text-primary-dark rounded"
+                      />
+                      <span className="text-sm font-semibold">Active (Show on Home Page)</span>
+                    </label>
+                  </>
                 )}
 
                 <div className="flex space-x-4">

@@ -4,31 +4,34 @@ import Project from './models/Project.js'
 import Certification from './models/Certification.js'
 import BlogPost from './models/BlogPost.js'
 import CV from './models/CV.js'
+import Insight from './models/Insight.js'
 
 dotenv.config({ path: '../.env' })
 
 const sampleProjects = [
   {
-    title: 'AWS Cloud Infrastructure Automation',
-    description: 'Automated cloud infrastructure deployment using Terraform and AWS CloudFormation. Implemented CI/CD pipelines for seamless deployment.',
-    technologies: ['AWS', 'Terraform', 'CloudFormation', 'Python', 'Lambda'],
+    title: 'MERN Stack Task Management System',
+    description: 'A full-stack project management app built with React, Node.js, Express, and MongoDB, featuring real-time boards, user authentication, and task history logging.',
+    technologies: ['React', 'Node.js', 'Express', 'MongoDB', 'JWT'],
+    cloudProvider: '',
+    status: 'completed',
+    githubUrl: 'https://github.com/Dharaneesh20',
+  },
+  {
+    title: 'Cloud Infrastructure Automation Lab',
+    description: 'Terraform script repository designed to spin up a secure, load-balanced web app cluster in AWS VPC with multi-AZ replication, route tables, and firewalls.',
+    technologies: ['Terraform', 'AWS VPC', 'EC2', 'IAM', 'Security Groups'],
     cloudProvider: 'aws',
     status: 'completed',
     githubUrl: 'https://github.com/Dharaneesh20',
   },
   {
-    title: 'Azure Kubernetes Deployment',
-    description: 'Containerized microservices application deployed on Azure Kubernetes Service with automated scaling and monitoring.',
-    technologies: ['Azure', 'Kubernetes', 'Docker', 'Helm', 'Prometheus'],
-    cloudProvider: 'azure',
-    status: 'ongoing',
-  },
-  {
-    title: 'MongoDB Atlas Migration Tool',
-    description: 'Built a migration tool to seamlessly transfer data from on-premise MongoDB to MongoDB Atlas with zero downtime.',
-    technologies: ['MongoDB', 'Node.js', 'Python', 'Atlas'],
+    title: 'Platform ERP & Inventory Dashboard',
+    description: 'An internal web dashboard that connects with MongoDB to monitor supply quantities, track sales transactions, and trigger email logs using AWS SES.',
+    technologies: ['React', 'Node.js', 'MongoDB', 'AWS SES', 'Tailwind'],
     cloudProvider: 'mongodb',
-    status: 'completed',
+    status: 'ongoing',
+    githubUrl: 'https://github.com/Dharaneesh20',
   },
 ]
 
@@ -38,82 +41,100 @@ const sampleCertifications = [
     issuer: 'MongoDB',
     date: new Date('2024-01-15'),
     cloudProvider: 'mongodb',
-    description: 'Demonstrates proficiency in MongoDB Atlas cloud database management, security, and optimization.',
+    description: 'Demonstrates baseline proficiency in MongoDB Atlas cloud database management, security, and schema configuration.',
     credentialUrl: 'https://www.mongodb.com/certification',
   },
   {
-    title: 'AWS Certified Solutions Architect - Associate',
+    title: 'AWS Certified Cloud Practitioner',
     issuer: 'Amazon Web Services',
     date: new Date('2023-08-20'),
     cloudProvider: 'aws',
-    description: 'Validates expertise in designing distributed systems on AWS with a focus on scalability and cost optimization.',
+    description: 'Validates foundational knowledge of cloud platforms, core AWS services, security, pricing, and infrastructure support.',
     credentialUrl: 'https://aws.amazon.com/certification/',
   },
   {
-    title: 'Microsoft Azure Administrator Associate',
-    issuer: 'Microsoft',
+    title: 'Introduction to Networks (Cisco Networking Academy)',
+    issuer: 'Cisco',
     date: new Date('2023-11-10'),
     cloudProvider: 'azure',
-    description: 'Demonstrates skills in implementing, managing, and monitoring Azure environments.',
-    credentialUrl: 'https://learn.microsoft.com/certifications/',
+    description: 'Covers fundamental networking concepts including routing principles, Ethernet switching, subnetting, IPv4/IPv6, and Cisco IOS configuration.',
+    credentialUrl: 'https://www.netacad.com/',
   },
 ]
 
 const sampleBlogPosts = [
   {
-    title: 'My Journey to MongoDB Certification',
-    content: 'Sharing my experience preparing for and passing the MongoDB Atlas Administrator certification. Key topics, study resources, and tips for success...',
-    excerpt: 'A comprehensive guide to preparing for MongoDB Atlas Administrator certification, including study tips and resources.',
+    title: 'Grounded Guide to MongoDB Atlas Setup',
+    content: 'A detailed walkthrough on setting up database clusters on MongoDB Atlas, creating user roles, configuring whitelist IPs, and securing connection strings in Node/MERN environment.',
+    excerpt: 'Step-by-step documentation for beginners setting up MongoDB Atlas clusters for local web dev.',
     author: 'Dharaneesh RS',
     date: new Date('2024-02-01'),
     cloudProvider: 'mongodb',
-    tags: ['MongoDB', 'Certification', 'Cloud', 'Database'],
+    tags: ['MongoDB', 'Database', 'Cloud', 'MERN'],
+  },
+]
+
+const sampleInsights = [
+  {
+    title: 'OWASP Top 10 Web Security Notes',
+    slug: 'owasp-top-10-web-security-notes',
+    excerpt: 'Grounded notes from my security research covering Cross-Site Scripting (XSS) and SQL Injection prevention in Node.js endpoints.',
+    content: 'I have been exploring security fundamentals outlined by the OWASP Top 10. In my MERN development, I practiced implementing basic protective headers using Helmet, sanitizing request inputs with express-validator, and testing endpoint vulnerabilities against simulated injection attacks in a local lab.',
+    category: 'learning',
+    tags: ['Security', 'VAPT', 'Web Dev', 'Node.js'],
+    status: 'published',
+    featured: true,
+    readTime: '3 min',
+    publishedAt: new Date('2026-07-01')
   },
   {
-    title: 'Building Serverless Applications with AWS Lambda',
-    content: 'Exploring the power of serverless architecture using AWS Lambda. Learn how to build scalable, cost-effective applications...',
-    excerpt: 'A practical guide to building serverless applications using AWS Lambda, API Gateway, and DynamoDB.',
-    author: 'Dharaneesh RS',
-    date: new Date('2024-01-15'),
-    cloudProvider: 'aws',
-    tags: ['AWS', 'Serverless', 'Lambda', 'Cloud Architecture'],
+    title: 'Setting up Routing Topologies in Packet Tracer',
+    slug: 'setting-up-routing-topologies-packet-tracer',
+    excerpt: 'Simulating a small-office LAN setup with VLAN switching, OSPF dynamic routing, and basic network access control lists.',
+    content: 'To reinforce network learning concepts, I built multiple lab scenarios in Cisco Packet Tracer. I configured routing paths using OSPF, isolated traffic using VLAN tags, and setup basic inbound/outbound Access Control Lists (ACLs) on gateway routers to practice secure packet filtering.',
+    category: 'learning',
+    tags: ['Networking', 'Cisco Labs', 'Infrastructure'],
+    status: 'published',
+    featured: false,
+    readTime: '4 min',
+    publishedAt: new Date('2026-06-20')
   },
   {
-    title: 'Azure DevOps: CI/CD Best Practices',
-    content: 'Implementing continuous integration and deployment pipelines on Azure DevOps. Best practices for automation and testing...',
-    excerpt: 'Learn how to set up efficient CI/CD pipelines using Azure DevOps with real-world examples.',
-    author: 'Dharaneesh RS',
-    date: new Date('2023-12-20'),
-    cloudProvider: 'azure',
-    tags: ['Azure', 'DevOps', 'CI/CD', 'Automation'],
-  },
+    title: 'Shipped ERP Dashboard low-stock automation logic',
+    slug: 'shipped-erp-dashboard-stock-automation-logic',
+    excerpt: 'Implemented inventory check triggers in Express backed by AWS SES templates for simple vendor replenishment alerts.',
+    content: 'Added a simple automation helper script inside the MERN ERP codebase. When stock numbers cross below a configured threshold, the backend calls AWS SES to trigger transactional notification template emails. Tested and integrated safely with the Atlas MongoDB database.',
+    category: 'project-update',
+    tags: ['Full-Stack', 'MongoDB', 'AWS SES', 'Automation'],
+    status: 'published',
+    featured: false,
+    readTime: '2 min',
+    publishedAt: new Date('2026-06-15')
+  }
 ]
 
 const sampleCV = {
   name: 'Dharaneesh RS',
-  title: 'Cloud Developer & Solutions Architect',
-  summary: 'Passionate cloud developer with 3+ years of experience in designing and implementing scalable cloud solutions on AWS and Azure. MongoDB Certified Associate Atlas Administrator with a strong focus on database optimization and cloud infrastructure automation.',
+  title: 'Full-Stack Developer & Cloud Enthusiast',
+  summary: 'Student engineer and builder specializing in React, Node.js, Express, and MongoDB. Enthusiastic about cloud architectures, network protocols, VAPT concepts, and building robust automation scripts.',
   experience: [
     {
-      title: 'Senior Cloud Developer',
-      company: 'Tech Solutions Inc.',
-      period: '2022 - Present',
+      title: 'Full-Stack Developer Intern',
+      company: 'Digital Solutions Ltd.',
+      period: '2024 - Present',
       description: [
-        'Designed and implemented cloud-native applications on AWS and Azure, serving 100K+ users',
-        'Led migration of monolithic applications to microservices architecture using Kubernetes',
-        'Reduced infrastructure costs by 40% through optimization and automated scaling',
-        'Mentored junior developers on cloud best practices and DevOps principles',
+        'Built dynamic React dashboards and REST APIs in Node.js connected with MongoDB',
+        'Helped configure AWS cloud development servers and basic automated logging',
+        'Implemented security checkups on Express endpoints protecting against typical SQLi inputs'
       ],
     },
     {
-      title: 'Cloud Engineer',
-      company: 'Digital Innovations Ltd.',
-      period: '2021 - 2022',
+      title: 'Web Development Intern',
+      company: 'Tech Startup Hub',
+      period: '2023 - 2024',
       description: [
-        'Developed serverless applications using AWS Lambda and Azure Functions',
-        'Implemented CI/CD pipelines using Jenkins and Azure DevOps',
-        'Managed MongoDB Atlas databases for enterprise applications',
-        'Automated infrastructure provisioning using Terraform and CloudFormation',
+        'Assisted in design and implementation of clean interfaces and forms in React applications',
+        'Wrote basic database schemas and setup cron scripts for auto database backup'
       ],
     },
   ],
@@ -121,55 +142,43 @@ const sampleCV = {
     {
       degree: 'Bachelor of Technology in Computer Science',
       institution: 'Your University Name',
-      year: '2021',
+      year: '2025',
     },
   ],
   skills: [
     {
-      category: 'Cloud Platforms',
-      items: ['AWS', 'Microsoft Azure', 'Google Cloud Platform'],
+      category: 'Full-Stack',
+      items: ['React', 'Node.js', 'Express.js', 'MongoDB', 'TypeScript', 'JavaScript'],
     },
     {
-      category: 'Databases',
-      items: ['MongoDB', 'PostgreSQL', 'MySQL', 'DynamoDB', 'CosmosDB'],
+      category: 'Cloud & Infrastructure',
+      items: ['AWS Basics', 'Azure Foundations', 'Terraform', 'Docker', 'VPC Routing'],
     },
     {
-      category: 'DevOps & Tools',
-      items: ['Docker', 'Kubernetes', 'Terraform', 'Jenkins', 'GitHub Actions', 'Azure DevOps'],
-    },
-    {
-      category: 'Programming Languages',
-      items: ['JavaScript', 'TypeScript', 'Python', 'Node.js', 'Bash'],
-    },
-    {
-      category: 'Frameworks & Libraries',
-      items: ['React', 'Express.js', 'Flask', 'FastAPI'],
+      category: 'Networking & Security',
+      items: ['Cisco iOS Basics', 'Packet Tracer Labs', 'VAPT Concepts', 'OWASP Top 10 Learning'],
     },
   ],
   achievements: [
-    'MongoDB Certified Associate Atlas Administrator (2024)',
-    'AWS Certified Solutions Architect - Associate (2023)',
-    'Microsoft Azure Administrator Associate (2023)',
-    'Successfully migrated 50+ applications to cloud infrastructure',
-    'Reduced cloud costs by 40% through optimization strategies',
-    'Published technical articles on cloud architecture and best practices',
+    'MongoDB Certified Associate Atlas Administrator',
+    'AWS Certified Cloud Practitioner',
+    'Simulated 10+ enterprise network topologies in Cisco labs',
+    'Built multiple full-stack platforms and utility scripts'
   ],
 }
 
 async function seedDatabase() {
   try {
-    // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio')
     console.log('Connected to MongoDB')
 
-    // Clear existing data
     await Project.deleteMany({})
     await Certification.deleteMany({})
     await BlogPost.deleteMany({})
     await CV.deleteMany({})
+    await Insight.deleteMany({})
     console.log('Cleared existing data')
 
-    // Insert sample data
     await Project.insertMany(sampleProjects)
     console.log('✓ Added sample projects')
 
@@ -179,16 +188,13 @@ async function seedDatabase() {
     await BlogPost.insertMany(sampleBlogPosts)
     console.log('✓ Added sample blog posts')
 
+    await Insight.insertMany(sampleInsights)
+    console.log('✓ Added sample insights')
+
     await CV.create(sampleCV)
     console.log('✓ Added sample CV')
 
     console.log('\n✅ Database seeded successfully!')
-    console.log('\nYou can now:')
-    console.log('1. Run "npm run dev" to start the application')
-    console.log('2. Visit http://localhost:3000 to view your portfolio')
-    console.log('3. Visit http://localhost:3000/admin to manage content')
-    console.log('   - Default credentials: admin / changeme123')
-
     process.exit(0)
   } catch (error) {
     console.error('Error seeding database:', error)

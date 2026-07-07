@@ -11,6 +11,9 @@ import cvRoutes from '../server/routes/cv.js'
 import codingProgressRoutes from '../server/routes/codingProgress.js'
 import experienceRoutes from '../server/routes/experience.js'
 import githubRoutes from '../server/routes/github.js'
+import insightRoutes from '../server/routes/insights.js'
+import kpiRoutes, { seedKpis } from '../server/routes/kpis.js'
+
 
 const app = express()
 
@@ -31,6 +34,10 @@ app.use('/api/cv', cvRoutes)
 app.use('/api/coding-progress', codingProgressRoutes)
 app.use('/api/experience', experienceRoutes)
 app.use('/api/github', githubRoutes)
+app.use('/api/insights', insightRoutes)
+app.use('/api', kpiRoutes)
+
+
 
 // Health check route
 app.get('/api/health', (req, res) => {
@@ -49,6 +56,7 @@ const connectDB = async () => {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio')
     isConnected = true
     console.log('Connected to MongoDB')
+    await seedKpis()
   } catch (error) {
     console.error('MongoDB connection error:', error)
   }

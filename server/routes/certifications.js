@@ -3,15 +3,32 @@ import Certification from '../models/Certification.js'
 
 const router = express.Router()
 
-// Get all certifications
-router.get('/', async (req, res) => {
+// Get recent certifications
+router.get('/recent', async (req, res) => {
   try {
-    const certifications = await Certification.find().sort({ date: -1 })
+    const limit = parseInt(req.query.limit) || 3
+    const certifications = await Certification.find().sort({ date: -1 }).limit(limit)
     res.json(certifications)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 })
+
+// Get all certifications
+router.get('/', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit)
+    let query = Certification.find().sort({ date: -1 })
+    if (limit) {
+      query = query.limit(limit)
+    }
+    const certifications = await query
+    res.json(certifications)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+})
+
 
 // Get single certification
 router.get('/:id', async (req, res) => {

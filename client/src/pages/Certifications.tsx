@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getCertifications } from '../services/api'
+import { getCertifications, resolveImage } from '../services/api'
 import CloudLogo from '../components/CloudLogo'
 import ImageModal from '../components/ImageModal'
 import { FaChevronDown, FaSearchPlus } from 'react-icons/fa'
@@ -146,12 +146,12 @@ const Certifications = () => {
               <div 
                 className="mb-4 overflow-hidden rounded-lg relative cursor-pointer group"
                 onClick={() => setSelectedImage({ 
-                  url: cert.imageUrl || cert.image || '', 
+                  url: resolveImage(cert.imageUrl || cert.image), 
                   title: cert.title 
                 })}
               >
                 <img
-                  src={cert.imageUrl || cert.image}
+                  src={resolveImage(cert.imageUrl || cert.image)}
                   alt={cert.title}
                   className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                 />

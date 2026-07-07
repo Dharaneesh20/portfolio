@@ -28,7 +28,16 @@
   .section-title {
     @apply text-4xl md:text-5xl font-bold mb-8 text-center;
   }
+
+  .glass-panel {
+    @apply bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/20 dark:border-gray-800/40 rounded-2xl shadow-lg;
+  }
+  
+  .glass-card {
+    @apply bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/20 dark:border-gray-800/40 rounded-2xl shadow-md hover:bg-white/50 dark:hover:bg-gray-900/50 hover:border-white/30 dark:hover:border-gray-700/60 hover:shadow-lg transition-all duration-300;
+  }
 }
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

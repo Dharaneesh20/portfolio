@@ -15,7 +15,9 @@ import CV from './pages/CV'
 import Contact from './pages/Contact'
 import Admin from './pages/Admin'
 import CodingProgress from './pages/CodingProgress'
+import Insights from './pages/Insights'
 import { usePageTracking } from './hooks/usePageTracking'
+
 
 function AppContent() {
   usePageTracking();
@@ -31,7 +33,9 @@ function AppContent() {
           <Route path="/certifications" element={<Certifications />} />
           <Route path="/github" element={<GitHub />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/insights" element={<Insights />} />
           <Route path="/cv" element={<CV />} />
+
           <Route path="/contact" element={<Contact />} />
           <Route path="/coding-progress" element={<CodingProgress />} />
           <Route path="/admin" element={<Admin />} />
