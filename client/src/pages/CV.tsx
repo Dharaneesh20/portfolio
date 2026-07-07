@@ -31,6 +31,7 @@ interface CVData {
   name: string
   title: string
   summary: string
+  pdfUrl?: string
   experience: Experience[]
   education: Education[]
   skills: Skill[]
@@ -56,11 +57,10 @@ const CV = () => {
     }
   }
 
-
-
   const handleDownloadPDF = () => {
     trackDownload('cv_pdf_file', 'pdf')
-    window.open('https://drive.google.com/file/d/1T5iDRFLyTJds4ol9BNYWziVw9GwzrDVL/view', '_blank')
+    const link = cvData?.pdfUrl || 'https://drive.google.com/file/d/1T5iDRFLyTJds4ol9BNYWziVw9GwzrDVL/view'
+    window.open(link, '_blank')
   }
 
 
@@ -98,7 +98,7 @@ const CV = () => {
           <div className="flex gap-3">
             <button className="btn-primary flex items-center" onClick={handleDownloadPDF}>
               <FaFilePdf className="mr-2" />
-              Download PDF
+              Download CV
             </button>
           </div>
         </div>

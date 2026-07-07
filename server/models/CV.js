@@ -10,6 +10,10 @@ const cvSchema = new mongoose.Schema({
     default: 'Cloud Developer & Solutions Architect',
   },
   summary: String,
+  pdfUrl: {
+    type: String,
+    default: 'https://drive.google.com/file/d/1T5iDRFLyTJds4ol9BNYWziVw9GwzrDVL/view',
+  },
   experience: [{
     title: String,
     company: String,

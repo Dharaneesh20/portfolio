@@ -1038,6 +1038,13 @@ const Admin = () => {
                         onChange={(e) => setCvData({ ...cvData, summary: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 min-h-[100px]"
                       />
+                      <input
+                        type="text"
+                        placeholder="CV Google Drive Link / PDF URL"
+                        value={cvData.pdfUrl || ''}
+                        onChange={(e) => setCvData({ ...cvData, pdfUrl: e.target.value })}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      />
                     </div>
                   </div>
 

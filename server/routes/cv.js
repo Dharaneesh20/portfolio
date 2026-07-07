@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
         name: 'Dharaneesh RS',
         title: 'Cloud Developer & Solutions Architect',
         summary: 'Passionate cloud developer with expertise in AWS and Azure, specializing in building scalable and efficient cloud infrastructure. MongoDB Certified Associate Atlas Administrator.',
+        pdfUrl: 'https://drive.google.com/file/d/1T5iDRFLyTJds4ol9BNYWziVw9GwzrDVL/view',
         experience: [
           {
             title: 'Cloud Developer',
