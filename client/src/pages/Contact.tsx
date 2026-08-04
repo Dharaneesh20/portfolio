@@ -4,6 +4,7 @@ import { FaEnvelope, FaLinkedin, FaGithub, FaPhone, FaAddressCard } from 'react-
 import { toast } from 'react-toastify'
 import { trackFormSubmit, trackSocialClick } from '../utils/analytics'
 import TypewriterTitle from '../components/ui/TypewriterTitle'
+import PunchButton from '../components/ui/PunchButton'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -195,6 +196,9 @@ const Contact = () => {
           </form>
         </motion.div>
       </div>
+
+      {/* Interactive Visitor Punch Button */}
+      <PunchButton />
     </div>
   )
 }

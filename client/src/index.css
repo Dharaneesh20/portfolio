@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Share+Tech+Mono&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@500;700;800&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&family=Share+Tech+Mono&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@500;700;800&family=VT323&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,6 +11,7 @@
   
   body {
     @apply bg-white dark:bg-[#030712] text-gray-900 dark:text-gray-100;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 
@@ -38,6 +39,19 @@
   .glass-card {
     @apply bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl border border-gray-200/40 dark:border-gray-800/60 rounded-2xl shadow-md hover:bg-white/60 dark:hover:bg-[#030712]/70 hover:border-gray-300 dark:hover:border-gray-700/80 hover:shadow-lg transition-all duration-300;
   }
+}
+
+/* High-End AI / Studio Typography Design Classes */
+.font-serif-italic {
+  font-family: 'Instrument Serif', Georgia, serif !important;
+  font-style: italic;
+  color: #FF6B4A;
+}
+
+.font-eyebrow {
+  font-family: 'JetBrains Mono', monospace !important;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 /* Custom Nothing UI Typography Classes */

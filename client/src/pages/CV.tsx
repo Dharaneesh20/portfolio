@@ -105,13 +105,15 @@ const CV = () => {
       >
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-5xl font-bold mb-2">{cvData.name}</h1>
-            <p className="text-2xl text-primary-light dark:text-primary-dark mb-4">
+            <h1 className="text-4xl sm:text-5xl font-extrabold mb-2 tracking-tight">
+              {cvData.name}
+            </h1>
+            <p className="text-xl sm:text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-4">
               {cvData.title}
             </p>
           </div>
           <div className="flex gap-3">
-            <button className="btn-primary flex items-center" onClick={handleDownloadPDF}>
+            <button className="btn-primary flex items-center shadow-md" onClick={handleDownloadPDF}>
               <FaFilePdf className="mr-2" />
               Download CV
             </button>

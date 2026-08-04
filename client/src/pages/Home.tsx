@@ -148,10 +148,10 @@ const Home = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-semibold"
+                className="font-mono text-xs sm:text-sm tracking-[0.2em] uppercase font-semibold text-blue-600 dark:text-blue-400 inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20"
               >
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping" />
-                <span>Open to Internships & Placements</span>
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-ping" />
+                <span>OPEN TO INTERNSHIPS & PLACEMENTS</span>
               </motion.div>
 
               <div className="space-y-3">
@@ -159,9 +159,9 @@ const Home = () => {
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-4xl sm:text-6xl font-black tracking-tight"
+                  className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]"
                 >
-                  Hi, I'm <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">Dharaneesh RS</span>
+                  Hi, I'm <span className="font-serif-italic font-normal text-[#FF6B4A]">Dharaneesh RS</span>
                 </motion.h1>
                 
                 <motion.div
@@ -173,7 +173,7 @@ const Home = () => {
                   {['MERN / Full-Stack', 'Cloud Enthusiast', 'Networking Learner', 'Security & VAPT Learner'].map((badge) => (
                     <span 
                       key={badge} 
-                      className="px-3 py-1 rounded-full text-xs font-bold bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/20 dark:border-gray-800/40 text-gray-700 dark:text-gray-300 shadow-sm"
+                      className="px-3 py-1 rounded-full text-xs font-mono font-medium bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/20 dark:border-gray-800/40 text-gray-700 dark:text-gray-300 shadow-sm"
                     >
                       {badge}
                     </span>
@@ -185,7 +185,7 @@ const Home = () => {
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-lg md:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-xl"
+                className="text-lg md:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-xl font-sans"
               >
                 I am a student builder specializing in full-stack applications and backend systems. I enjoy exploring cloud servers, networking, and secure development practices.
               </motion.p>
@@ -199,7 +199,7 @@ const Home = () => {
                 <Link
                   to="/projects"
                   onClick={() => trackClick('Hero - Projects', 'button')}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/35 hover:scale-[1.02] transition-all flex items-center justify-center group"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl font-mono text-sm tracking-wide font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/35 hover:scale-[1.02] transition-all flex items-center justify-center group"
                 >
                   <span>View Projects</span>
                   <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -207,14 +207,14 @@ const Home = () => {
                 <Link
                   to="/experience"
                   onClick={() => trackClick('Hero - Experience', 'button')}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/25 dark:border-gray-800/60 hover:border-white/40 dark:hover:border-gray-750 transition-colors shadow-sm flex items-center justify-center"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl font-mono text-sm tracking-wide font-medium bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-gray-300 dark:border-gray-800 text-gray-900 dark:text-white hover:border-gray-400 dark:hover:border-gray-700 transition-colors shadow-sm flex items-center justify-center"
                 >
                   View Experience
                 </Link>
                 <Link
                   to="/contact"
                   onClick={() => trackClick('Hero - Contact', 'button')}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/25 dark:border-gray-800/60 hover:border-white/40 dark:hover:border-gray-750 transition-colors shadow-sm flex items-center justify-center"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl font-mono text-sm tracking-wide font-medium bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-gray-300 dark:border-gray-800 text-gray-900 dark:text-white hover:border-gray-400 dark:hover:border-gray-700 transition-colors shadow-sm flex items-center justify-center"
                 >
                   Get in Touch
                 </Link>
@@ -351,7 +351,9 @@ const Home = () => {
         {/* C. CORE FOCUS / WHAT I WORK ON SECTION */}
         <section className="py-12 border-t border-white/10 dark:border-gray-850">
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-3">Core Engineering Focus</h2>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-3">
+              Core <span className="font-serif-italic font-normal text-[#FF6B4A] px-1">Engineering</span> Focus
+            </h2>
             <p className="text-gray-650 dark:text-gray-400">
               Areas of active study, engineering labs, and codebase construction. Honest exploration without overclaimed credentials.
             </p>
@@ -389,7 +391,9 @@ const Home = () => {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-6 gap-4">
             <div>
               <span className="font-nothing text-xs font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest">Engineering Journal</span>
-              <h2 className="text-3xl font-black tracking-tight mt-1">Latest Insights</h2>
+              <h2 className="text-3xl font-black tracking-tight mt-1">
+                Latest <span className="font-serif-italic font-normal text-[#FF6B4A] px-1">Insights</span>
+              </h2>
             </div>
             <Link
               to="/insights"
@@ -507,12 +511,14 @@ const Home = () => {
         <section className="py-12 border-t border-white/10 dark:border-gray-850">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-6 gap-4">
             <div>
-              <span className="text-xs font-bold text-blue-500 dark:text-blue-400 uppercase tracking-widest">Engineering builds</span>
-              <h2 className="text-3xl font-black tracking-tight mt-1">Recent Projects</h2>
+              <span className="text-xs font-bold text-cyan-500 dark:text-cyan-400 uppercase tracking-widest">Engineering builds</span>
+              <h2 className="text-3xl font-black tracking-tight mt-1">
+                Recent <span className="font-serif-italic font-normal text-[#FF6B4A] px-1">Projects</span>
+              </h2>
             </div>
             <Link
               to="/projects"
-              className="inline-flex items-center space-x-2 text-blue-500 dark:text-blue-400 font-bold hover:underline"
+              className="inline-flex items-center space-x-2 text-cyan-500 dark:text-cyan-400 font-bold hover:underline"
             >
               <span>See More Projects</span>
               <FaArrowRight className="text-sm" />
@@ -567,14 +573,15 @@ const Home = () => {
                       </p>
                     </div>
 
-                      <div>
-                        <div className="flex flex-wrap gap-1.5 mb-4">
-                          {proj.technologies && proj.technologies.slice(0, 4).map((t: string) => (
-                            <span key={t} className={`px-2 py-0.5 text-[11px] font-bold rounded-md border backdrop-blur-md transition-all duration-200 hover:scale-105 ${getBadgeStyle(t)}`}>
-                              {t}
-                            </span>
-                          ))}
-                        </div>
+                    <div>
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {proj.technologies && proj.technologies.slice(0, 4).map((t: string) => (
+                          <span key={t} className={`px-2 py-0.5 text-[11px] font-bold rounded-md border backdrop-blur-md transition-all duration-200 hover:scale-105 ${getBadgeStyle(t)}`}>
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+
                       <div className="flex items-center space-x-4 border-t border-white/10 dark:border-gray-800/60 pt-3 text-xs font-semibold">
                         {proj.githubUrl && (
                           <a
@@ -610,7 +617,9 @@ const Home = () => {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-6 gap-4">
             <div>
               <span className="text-xs font-bold text-purple-500 dark:text-purple-400 uppercase tracking-widest">Accreditation</span>
-              <h2 className="text-3xl font-black tracking-tight mt-1">Recent Certifications</h2>
+              <h2 className="text-3xl font-black tracking-tight mt-1">
+                Recent <span className="font-serif-italic font-normal text-[#FF6B4A] px-1">Certifications</span>
+              </h2>
             </div>
             <Link
               to="/certifications"
@@ -697,7 +706,9 @@ const Home = () => {
             className="relative bg-gradient-to-r from-blue-600/30 to-purple-600/30 backdrop-blur-md rounded-3xl p-8 md:p-14 text-center border border-white/20 dark:border-gray-800/40 overflow-hidden shadow-xl"
           >
             <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-              <h2 className="text-3xl font-black text-gray-900 dark:text-white">Let's Build Something Together</h2>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                Let's <span className="font-serif-italic font-normal text-[#FF6B4A] px-1">Build Something</span> Together
+              </h2>
               <p className="text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
                 I am actively seeking internship opportunities and entry-level full-stack development roles. Let's discuss projects, networking simulation, or modern web integrations.
               </p>

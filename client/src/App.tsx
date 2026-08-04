@@ -19,6 +19,8 @@ import Insights from './pages/Insights'
 import DottedBg2 from './components/ui/DottedBg2'
 import { usePageTracking } from './hooks/usePageTracking'
 
+import NotFoundPage from './pages/NotFoundPage'
+
 function AppContent() {
   usePageTracking();
   const { theme } = useTheme();
@@ -55,6 +57,7 @@ function AppContent() {
             <Route path="/cv" element={<CV />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
         <Footer />
