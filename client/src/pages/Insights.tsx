@@ -172,7 +172,7 @@ const Insights = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#080d1a] text-gray-900 dark:text-gray-150 py-12 relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-transparent text-gray-900 dark:text-gray-100 py-12 relative overflow-hidden transition-colors duration-300">
       <LiquidGlassBackground variant="insights" />
 
 
@@ -184,13 +184,13 @@ const Insights = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary-light/10 text-primary-light dark:bg-primary-dark/10 dark:text-primary-dark tracking-wide uppercase">
+            <span className="px-3.5 py-1 text-xs font-bold rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 border border-blue-500/20 tracking-wider uppercase">
               Activity & Log
             </span>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight mt-3 mb-4">
-              Insights & Professional Feed
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight mt-3 mb-4 text-gray-900 dark:text-white">
+              Insights & <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">Professional Feed</span>
             </h1>
-            <p className="text-gray-650 dark:text-gray-400 text-base md:text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg">
               A chronological feed of certificates earned, security learning, systems shipping updates, and technical notes.
             </p>
           </motion.div>
@@ -210,8 +210,8 @@ const Insights = () => {
                 }}
                 className={`flex items-center justify-center space-x-2 px-4 py-2 h-10 rounded-full text-sm font-semibold transition-all duration-200 border ${
                   isSelected
-                    ? 'bg-gray-900 border-gray-900 text-white dark:bg-white dark:border-white dark:text-gray-900 shadow-md scale-105'
-                    : 'bg-white border-gray-200 text-gray-600 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-900 dark:hover:text-gray-200'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 border-blue-500 text-white shadow-lg shadow-blue-500/25 scale-105'
+                    : 'bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl border-gray-200/40 dark:border-gray-800/60 text-gray-700 dark:text-gray-300 hover:bg-white/60 dark:hover:bg-white/10'
                 }`}
               >
                 <Icon className="text-base" />
@@ -224,13 +224,13 @@ const Insights = () => {
 
         {/* Empty State */}
         {filteredInsights.length === 0 && (
-          <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 shadow-sm">
+          <div className="text-center py-20 bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl rounded-2xl border border-gray-200/40 dark:border-gray-800/60 p-8 shadow-sm">
             <p className="text-xl text-gray-500 dark:text-gray-400 mb-2">No updates found in this category.</p>
             <button
               onClick={() => setFilter('all')}
-              className="text-primary-light dark:text-primary-dark font-semibold hover:underline"
+              className="mt-4 px-6 py-2 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
             >
-              Reset filters
+              Show All Updates
             </button>
           </div>
         )}
@@ -243,7 +243,7 @@ const Insights = () => {
             transition={{ duration: 0.5 }}
             className="mb-16"
           >
-            <div className="relative group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 grid md:grid-cols-12">
+            <div className="relative group bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl rounded-2xl border border-gray-200/40 dark:border-gray-800/60 overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 grid md:grid-cols-12">
               {(featuredInsight.coverImage || featuredInsight.image) && (
                 <div
                   className="md:col-span-4 relative overflow-hidden cursor-pointer h-48 md:h-full min-h-[200px]"
@@ -333,12 +333,12 @@ const Insights = () => {
                 className="relative"
               >
                 {/* Timeline Icon Node */}
-                <div className="absolute -left-[39px] md:-left-[55px] top-1.5 w-7 h-7 md:w-10 md:h-10 rounded-full bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 shadow-sm">
+                <div className="absolute -left-[39px] md:-left-[55px] top-1.5 w-7 h-7 md:w-10 md:h-10 rounded-full bg-white/60 dark:bg-[#030712]/80 backdrop-blur-md border-2 border-gray-200/40 dark:border-gray-800/80 flex items-center justify-center text-gray-500 dark:text-gray-400 shadow-sm">
                   {getIcon(insight.type)}
                 </div>
 
                 {/* Insight Card */}
-                <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-250/60 dark:border-gray-800/80 p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div className="bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl rounded-2xl border border-gray-200/40 dark:border-gray-800/60 p-6 shadow-md hover:shadow-lg transition-all duration-300">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
                     <span className={`self-start flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${getBadgeStyles(insight.type)}`}>
                       <span>{INSIGHT_TYPE_METADATA[insight.type]?.label || insight.type}</span>

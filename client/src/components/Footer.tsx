@@ -1,27 +1,27 @@
-import { FaGithub, FaLinkedin, FaHeart } from 'react-icons/fa'
+import { FaGithub, FaLinkedin } from 'react-icons/fa'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-gray-100 dark:bg-gray-800 py-8 mt-16">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0">
-            <p className="text-gray-600 dark:text-gray-400 flex items-center">
+    <footer className="bg-white/40 dark:bg-[#030712]/60 backdrop-blur-xl border-t border-gray-200/20 dark:border-gray-800/50 py-8 mt-16 relative z-10">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
+          <div>
+            <p className="text-gray-700 dark:text-gray-300 font-semibold">
               Developed by Dharaneesh RS
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
               © {currentYear} All rights reserved
             </p>
           </div>
 
-          <div className="flex space-x-6">
+          <div className="flex items-center space-x-5">
             <a
               href="https://github.com/Dharaneesh20"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark transition-colors"
+              className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-black/5 dark:hover:bg-white/10 transition-all text-xl"
               aria-label="GitHub"
             >
               <FaGithub />
@@ -30,7 +30,7 @@ const Footer = () => {
               href="https://www.linkedin.com/in/dharaneeshrs-clouddev/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark transition-colors"
+              className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-black/5 dark:hover:bg-white/10 transition-all text-xl"
               aria-label="LinkedIn"
             >
               <FaLinkedin />

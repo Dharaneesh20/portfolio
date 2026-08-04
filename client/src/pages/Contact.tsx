@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { FaEnvelope, FaLinkedin, FaGithub, FaPhone } from 'react-icons/fa'
+import { FaEnvelope, FaLinkedin, FaGithub, FaPhone, FaAddressCard } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { trackFormSubmit, trackSocialClick } from '../utils/analytics'
 
@@ -96,6 +96,19 @@ const Contact = () => {
               <div>
                 <p className="font-semibold">GitHub</p>
                 <p className="text-sm">Dharaneesh20</p>
+              </div>
+            </a>
+
+            <a
+              href="/cv"
+              className="flex items-center space-x-4 text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors border-t border-gray-200/40 dark:border-gray-800/60 pt-4"
+            >
+              <div className="bg-blue-600 dark:bg-blue-500 text-white p-4 rounded-full shadow-md">
+                <FaAddressCard className="text-xl" />
+              </div>
+              <div>
+                <p className="font-semibold text-blue-600 dark:text-blue-400">Curriculum Vitae / Resume</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">View or download full CV</p>
               </div>
             </a>
           </div>

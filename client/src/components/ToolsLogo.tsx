@@ -6,7 +6,6 @@ import {
 } from 'react-icons/fa'
 import { 
   SiJenkins,
-  SiVisualstudiocode,
   SiIntellijidea,
   SiPycharm,
   SiWebstorm,

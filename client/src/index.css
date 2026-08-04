@@ -8,50 +8,45 @@
   }
   
   body {
-    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+    @apply bg-white dark:bg-[#030712] text-gray-900 dark:text-gray-100;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-light dark:bg-primary-dark text-white px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-transform duration-200;
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/25 hover:scale-[1.03] transition-all duration-200;
   }
   
   .btn-secondary {
-    @apply bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-transform duration-200;
+    @apply bg-white/40 dark:bg-white/10 backdrop-blur-md border border-gray-200/40 dark:border-white/10 text-gray-800 dark:text-gray-200 px-6 py-3 rounded-xl font-semibold hover:bg-white/60 dark:hover:bg-white/15 hover:scale-[1.03] transition-all duration-200;
   }
   
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300;
+    @apply bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl border border-gray-200/40 dark:border-gray-800/60 rounded-2xl shadow-lg p-6 hover:shadow-xl hover:border-gray-300 dark:hover:border-gray-700/80 transition-all duration-300;
   }
   
   .section-title {
-    @apply text-4xl md:text-5xl font-bold mb-8 text-center;
+    @apply text-4xl md:text-5xl font-black mb-8 text-center bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent;
   }
 
   .glass-panel {
-    @apply bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/20 dark:border-gray-800/40 rounded-2xl shadow-lg;
+    @apply bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl border border-gray-200/40 dark:border-gray-800/60 rounded-2xl shadow-lg;
   }
   
   .glass-card {
-    @apply bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/20 dark:border-gray-800/40 rounded-2xl shadow-md hover:bg-white/50 dark:hover:bg-gray-900/50 hover:border-white/30 dark:hover:border-gray-700/60 hover:shadow-lg transition-all duration-300;
+    @apply bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl border border-gray-200/40 dark:border-gray-800/60 rounded-2xl shadow-md hover:bg-white/60 dark:hover:bg-[#030712]/70 hover:border-gray-300 dark:hover:border-gray-700/80 hover:shadow-lg transition-all duration-300;
   }
 }
 
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-200 dark:bg-gray-800;
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary-light dark:bg-primary-dark rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-blue-700 dark:bg-blue-400;
+  @apply bg-gray-300 dark:bg-gray-800 rounded-full hover:bg-blue-500 dark:hover:bg-blue-400;
 }

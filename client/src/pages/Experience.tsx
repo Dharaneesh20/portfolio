@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { getExperiences } from '../services/api'
 import { FaBriefcase, FaCalendar, FaMapMarkerAlt, FaCertificate } from 'react-icons/fa'
 import ImageModal from '../components/ImageModal'
+import { getBadgeStyle } from '../utils/badgeColors'
 
 interface Project {
   name: string
@@ -183,7 +184,7 @@ const Experience = () => {
                         {exp.techStack.map((tech) => (
                           <span
                             key={tech}
-                            className="px-3 py-1 bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark rounded-full text-sm font-medium"
+                            className={`px-3 py-1 text-xs font-bold rounded-xl border backdrop-blur-md transition-all duration-200 hover:scale-105 ${getBadgeStyle(tech)}`}
                           >
                             {tech}
                           </span>

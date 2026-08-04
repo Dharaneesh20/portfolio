@@ -7,6 +7,7 @@ import FrameworkLogo from '../components/FrameworkLogo'
 import ToolsLogo from '../components/ToolsLogo'
 import ImageModal from '../components/ImageModal'
 import { trackContentView, trackExternalLink } from '../utils/analytics'
+import { getBadgeStyle } from '../utils/badgeColors'
 
 interface Project {
   _id: string
@@ -68,15 +69,15 @@ const Projects = () => {
       </motion.h1>
 
       {/* Filter Buttons */}
-      <div className="flex justify-center space-x-4 mb-12">
+      <div className="flex flex-wrap justify-center gap-3 mb-12">
         {['all', 'completed', 'ongoing', 'upcoming'].map((status) => (
           <button
             key={status}
             onClick={() => setFilter(status)}
-            className={`px-6 py-2 rounded-full font-semibold transition-all ${
+            className={`px-6 py-2.5 rounded-full font-semibold transition-all duration-200 ${
               filter === status
-                ? 'bg-primary-light dark:bg-primary-dark text-white'
-                : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 border border-blue-500 text-white shadow-lg shadow-blue-500/25 scale-105'
+                : 'bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl border border-gray-200/40 dark:border-gray-800/60 text-gray-700 dark:text-gray-300 hover:bg-white/60 dark:hover:bg-white/10'
             }`}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -137,7 +138,7 @@ const Projects = () => {
               {project.technologies.map((tech) => (
                 <span
                   key={tech}
-                  className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded-full text-sm"
+                  className={`px-3 py-1 text-xs font-bold rounded-xl border backdrop-blur-md transition-all duration-200 hover:scale-105 ${getBadgeStyle(tech)}`}
                 >
                   {tech}
                 </span>

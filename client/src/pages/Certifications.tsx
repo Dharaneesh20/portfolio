@@ -72,13 +72,13 @@ const Certifications = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full md:w-64 px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-between hover:border-primary-light dark:hover:border-primary-dark transition-colors shadow-md"
+            className="w-full md:w-64 px-6 py-3 bg-white/50 dark:bg-[#030712]/70 backdrop-blur-xl border border-gray-200/40 dark:border-gray-800/60 rounded-xl flex items-center justify-between hover:border-blue-500/50 transition-all shadow-md"
           >
             <div className="flex items-center space-x-3">
               {selectedProvider !== 'all' && (
                 <CloudLogo provider={selectedProvider} size="text-2xl" />
               )}
-              <span className="font-semibold">
+              <span className="font-semibold text-gray-800 dark:text-gray-200">
                 {selectedProvider === 'all' ? 'All Providers' : selectedProvider.charAt(0).toUpperCase() + selectedProvider.slice(1)}
               </span>
             </div>
@@ -86,7 +86,7 @@ const Certifications = () => {
               animate={{ rotate: isDropdownOpen ? 180 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              <FaChevronDown />
+              <FaChevronDown className="text-gray-500 dark:text-gray-400" />
             </motion.div>
           </motion.button>
 
@@ -96,7 +96,7 @@ const Certifications = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="absolute z-20 w-full md:w-64 mt-2 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-xl overflow-hidden"
+                className="absolute z-20 w-full md:w-64 mt-2 bg-white/90 dark:bg-[#030712]/90 backdrop-blur-2xl border border-gray-200/40 dark:border-gray-800/60 rounded-xl shadow-xl overflow-hidden"
               >
                 {providers.map((provider) => (
                   <motion.button

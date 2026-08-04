@@ -23,6 +23,7 @@ import { getRecentProjects, getRecentCertifications, getRecentInsights, resolveI
 import { trackClick } from '../utils/analytics'
 import ImageModal from '../components/ImageModal'
 import LiquidGlassBackground from '../components/ambient/LiquidGlassBackground'
+import { getBadgeStyle } from '../utils/badgeColors'
 
 
 
@@ -129,7 +130,7 @@ const Home = () => {
   ]
 
   return (
-    <div className="relative min-h-screen bg-gray-50 dark:bg-[#080d1a] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
+    <div className="relative min-h-screen bg-transparent text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
       
       {/* Full-bleed atmospheric background spanning full viewport width */}
       <LiquidGlassBackground variant="hero" />
@@ -371,7 +372,7 @@ const Home = () => {
                     </p>
                     <div className="flex flex-wrap gap-1.5 pt-2 border-t border-gray-150 dark:border-gray-800/60">
                       {area.tags.map(t => (
-                        <span key={t} className="px-2 py-0.5 text-xs rounded bg-white/40 dark:bg-gray-850/60 border border-white/20 dark:border-gray-800/40 text-gray-550 dark:text-gray-300">
+                        <span key={t} className={`px-2.5 py-0.5 text-xs font-bold rounded-lg border backdrop-blur-md transition-all duration-200 hover:scale-105 ${getBadgeStyle(t)}`}>
                           {t}
                         </span>
                       ))}
@@ -566,14 +567,14 @@ const Home = () => {
                       </p>
                     </div>
 
-                    <div>
-                      <div className="flex flex-wrap gap-1 mb-4">
-                        {proj.technologies && proj.technologies.slice(0, 3).map((t: string) => (
-                          <span key={t} className="px-2 py-0.5 text-[10px] bg-white/20 dark:bg-gray-800/50 rounded border border-white/10 dark:border-gray-800 text-gray-550 dark:text-gray-400">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
+                      <div>
+                        <div className="flex flex-wrap gap-1.5 mb-4">
+                          {proj.technologies && proj.technologies.slice(0, 4).map((t: string) => (
+                            <span key={t} className={`px-2 py-0.5 text-[11px] font-bold rounded-md border backdrop-blur-md transition-all duration-200 hover:scale-105 ${getBadgeStyle(t)}`}>
+                              {t}
+                            </span>
+                          ))}
+                        </div>
                       <div className="flex items-center space-x-4 border-t border-white/10 dark:border-gray-800/60 pt-3 text-xs font-semibold">
                         {proj.githubUrl && (
                           <a
