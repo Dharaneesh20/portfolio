@@ -2289,10 +2289,14 @@ const Admin = () => {
                   e.preventDefault()
                   try {
                     const res = await updateCurrentlyBuilding(currentlyBuildingData)
-                    toast.success('Currently Building card updated successfully!')
-                    if (res.data?.data) setCurrentlyBuildingData(res.data.data)
+                    toast.success(res.data?.message || 'Currently Building card updated successfully!')
+                    const updated = res.data?.data || res.data
+                    if (updated && typeof updated === 'object') {
+                      setCurrentlyBuildingData(updated)
+                    }
                   } catch (err: any) {
-                    toast.error(err.response?.data?.error || 'Failed to update Currently Building card')
+                    console.error('Update error:', err)
+                    toast.error(err.response?.data?.error || err.message || 'Failed to update Currently Building card')
                   }
                 }}
                 className="space-y-4"

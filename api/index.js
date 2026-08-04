@@ -13,6 +13,7 @@ import experienceRoutes from '../server/routes/experience.js'
 import githubRoutes from '../server/routes/github.js'
 import insightRoutes, { migrateInsights } from '../server/routes/insights.js'
 import kpiRoutes, { seedKpis } from '../server/routes/kpis.js'
+import currentlyBuildingRoutes, { seedCurrentlyBuilding } from '../server/routes/currentlyBuilding.js'
 
 
 const app = express()
@@ -35,6 +36,7 @@ app.use('/api/coding-progress', codingProgressRoutes)
 app.use('/api/experience', experienceRoutes)
 app.use('/api/github', githubRoutes)
 app.use('/api/insights', insightRoutes)
+app.use('/api/currently-building', currentlyBuildingRoutes)
 app.use('/api', kpiRoutes)
 
 
@@ -58,6 +60,7 @@ const connectDB = async () => {
     console.log('Connected to MongoDB')
     await seedKpis()
     await migrateInsights()
+    await seedCurrentlyBuilding()
   } catch (error) {
     console.error('MongoDB connection error:', error)
   }
