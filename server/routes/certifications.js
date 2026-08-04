@@ -1,4 +1,5 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import Certification from '../models/Certification.js'
 
 const router = express.Router()
@@ -6,17 +7,23 @@ const router = express.Router()
 // Get recent certifications
 router.get('/recent', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json([])
+    }
     const limit = parseInt(req.query.limit) || 3
     const certifications = await Certification.find().sort({ date: -1 }).limit(limit)
     res.json(certifications)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json([])
   }
 })
 
 // Get all certifications
 router.get('/', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json([])
+    }
     const limit = parseInt(req.query.limit)
     let query = Certification.find().sort({ date: -1 })
     if (limit) {
@@ -25,7 +32,7 @@ router.get('/', async (req, res) => {
     const certifications = await query
     res.json(certifications)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json([])
   }
 })
 

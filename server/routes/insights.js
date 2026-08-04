@@ -1,4 +1,5 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import Insight from '../models/Insight.js'
 
 const router = express.Router()
@@ -6,19 +7,25 @@ const router = express.Router()
 // Get recent published insights
 router.get('/recent', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json([])
+    }
     const limit = parseInt(req.query.limit) || 3
     const insights = await Insight.find({ status: 'published' })
       .sort({ displayOrder: 1, publishedAt: -1, createdAt: -1 })
       .limit(limit)
     res.json(insights)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json([])
   }
 })
 
 // Get all insights (public filter: published, admin filter: all)
 router.get('/', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json([])
+    }
     const filter = {}
     if (req.query.status !== 'all') {
       filter.status = 'published'
@@ -26,7 +33,7 @@ router.get('/', async (req, res) => {
     const insights = await Insight.find(filter).sort({ displayOrder: 1, publishedAt: -1, createdAt: -1 })
     res.json(insights)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json([])
   }
 })
 

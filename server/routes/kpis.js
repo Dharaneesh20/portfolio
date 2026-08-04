@@ -1,20 +1,23 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import Kpi from '../models/Kpi.js'
 
 const router = express.Router()
 
+const defaultKpis = [
+  { _id: 'kpi1', title: 'Projects Built', value: '10+', subtitle: 'MERN & Full-stack apps', displayOrder: 1, isActive: true },
+  { _id: 'kpi2', title: 'Certifications', value: '8+', subtitle: 'AWS & technical courses', displayOrder: 2, isActive: true },
+  { _id: 'kpi3', title: 'Insights Logged', value: '12+', subtitle: 'Chronological learning log', displayOrder: 3, isActive: true },
+  { _id: 'kpi4', title: 'Core Focus Areas', value: '3+', subtitle: 'Cloud · Network · Security', displayOrder: 4, isActive: true }
+]
+
 // Seed helper
 export const seedKpis = async () => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) return
     const count = await Kpi.countDocuments()
     if (count === 0) {
-      const defaultKpis = [
-        { title: 'Projects Built', value: '10+', subtitle: 'MERN & Full-stack apps', displayOrder: 1, isActive: true },
-        { title: 'Certifications', value: '8+', subtitle: 'AWS & technical courses', displayOrder: 2, isActive: true },
-        { title: 'Insights Logged', value: '12+', subtitle: 'Chronological learning log', displayOrder: 3, isActive: true },
-        { title: 'Core Focus Areas', value: '3+', subtitle: 'Cloud · Network · Security', displayOrder: 4, isActive: true }
-      ]
-      await Kpi.insertMany(defaultKpis)
+      await Kpi.insertMany(defaultKpis.map(({ _id, ...rest }) => rest))
       console.log('Seeded default KPIs successfully')
     }
   } catch (error) {
@@ -25,20 +28,26 @@ export const seedKpis = async () => {
 // GET /dashboard/kpis (Public active KPIs)
 router.get('/dashboard/kpis', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json(defaultKpis)
+    }
     const kpis = await Kpi.find({ isActive: true }).sort({ displayOrder: 1 })
     res.json(kpis)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json(defaultKpis)
   }
 })
 
 // GET /admin/dashboard/kpis (Admin: all KPIs)
 router.get('/admin/dashboard/kpis', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json(defaultKpis)
+    }
     const kpis = await Kpi.find().sort({ displayOrder: 1 })
     res.json(kpis)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json(defaultKpis)
   }
 })
 

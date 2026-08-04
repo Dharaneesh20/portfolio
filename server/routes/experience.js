@@ -1,4 +1,5 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import Experience from '../models/Experience.js'
 
 const router = express.Router()
@@ -6,10 +7,13 @@ const router = express.Router()
 // Get all experiences
 router.get('/', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json([])
+    }
     const experiences = await Experience.find().sort({ startDate: -1 })
     res.json(experiences)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json([])
   }
 })
 

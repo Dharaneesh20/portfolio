@@ -1,4 +1,5 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import Project from '../models/Project.js'
 import path from 'path'
 
@@ -7,17 +8,23 @@ const router = express.Router()
 // Get recent projects
 router.get('/recent', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json([])
+    }
     const limit = parseInt(req.query.limit) || 3
     const projects = await Project.find().sort({ createdAt: -1 }).limit(limit)
     res.json(projects)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json([])
   }
 })
 
 // Get all projects
 router.get('/', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json([])
+    }
     const limit = parseInt(req.query.limit)
     let query = Project.find().sort({ createdAt: -1 })
     if (limit) {
@@ -26,7 +33,7 @@ router.get('/', async (req, res) => {
     const projects = await query
     res.json(projects)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json([])
   }
 })
 

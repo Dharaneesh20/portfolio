@@ -55,30 +55,39 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' })
 })
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio')
+// Start Express server immediately
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`)
+})
+
+// MongoDB Connection (non-blocking)
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio', {
+  serverSelectionTimeoutMS: 5000
+})
   .then(async () => {
     console.log('Connected to MongoDB')
-    await seedKpis()
-    await migrateInsights()
-    await seedCurrentlyBuilding()
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`)
-    })
-
-    // Schedule GitHub stats fetch 3 times a day: 00:00, 08:00, 16:00
-    cron.schedule('0 0,8,16 * * *', async () => {
-      console.log('[Cron] Running scheduled GitHub stats fetch...')
-      try {
-        await fetchAndCacheGitHubStats()
-      } catch (err) {
-        console.error('[Cron] GitHub fetch error:', err.message)
-      }
-    })
-    console.log('[Cron] GitHub stats scheduler started (00:00, 08:00, 16:00)')
+    try {
+      await seedKpis()
+      await migrateInsights()
+      await seedCurrentlyBuilding()
+    } catch (err) {
+      console.warn('DB seeding error:', err.message)
+    }
   })
   .catch((error) => {
-    console.error('MongoDB connection error:', error)
+    console.warn('MongoDB connection warning:', error.message)
+    console.warn('Running server in fallback mode.')
   })
+
+// Schedule GitHub stats fetch 3 times a day: 00:00, 08:00, 16:00
+cron.schedule('0 0,8,16 * * *', async () => {
+  console.log('[Cron] Running scheduled GitHub stats fetch...')
+  try {
+    await fetchAndCacheGitHubStats()
+  } catch (err) {
+    console.error('[Cron] GitHub fetch error:', err.message)
+  }
+})
+console.log('[Cron] GitHub stats scheduler started (00:00, 08:00, 16:00)')
 
 export default app

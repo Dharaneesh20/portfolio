@@ -1,4 +1,5 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import BlogPost from '../models/BlogPost.js'
 
 const router = express.Router()
@@ -6,10 +7,13 @@ const router = express.Router()
 // Get all blog posts
 router.get('/', async (req, res) => {
   try {
+    if (!mongoose.connection || mongoose.connection.readyState !== 1) {
+      return res.json([])
+    }
     const posts = await BlogPost.find().sort({ date: -1 })
     res.json(posts)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.json([])
   }
 })
 
