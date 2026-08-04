@@ -8,6 +8,7 @@ import ToolsLogo from '../components/ToolsLogo'
 import ImageModal from '../components/ImageModal'
 import { trackContentView, trackExternalLink } from '../utils/analytics'
 import { getBadgeStyle } from '../utils/badgeColors'
+import TypewriterTitle from '../components/ui/TypewriterTitle'
 
 interface Project {
   _id: string
@@ -60,13 +61,7 @@ const Projects = () => {
 
   return (
     <div className="container mx-auto px-4 py-20">
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="section-title"
-      >
-        My Projects
-      </motion.h1>
+      <TypewriterTitle texts={["My Projects", "Full-Stack Applications", "Cloud & Backend Systems"]} />
 
       {/* Filter Buttons */}
       <div className="flex flex-wrap justify-center gap-3 mb-12">

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { FaEnvelope, FaLinkedin, FaGithub, FaPhone, FaAddressCard } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { trackFormSubmit, trackSocialClick } from '../utils/analytics'
+import TypewriterTitle from '../components/ui/TypewriterTitle'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -31,13 +32,7 @@ const Contact = () => {
 
   return (
     <div className="container mx-auto px-4 py-20">
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="section-title"
-      >
-        Get In Touch
-      </motion.h1>
+      <TypewriterTitle texts={["Get In Touch", "Let's Connect", "Start a Conversation"]} />
 
       <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto mt-12">
         {/* Contact Info */}

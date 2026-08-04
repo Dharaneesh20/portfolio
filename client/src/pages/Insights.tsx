@@ -16,6 +16,7 @@ import {
 import { trackContentView, trackClick } from '../utils/analytics'
 import ImageModal from '../components/ImageModal'
 import LiquidGlassBackground from '../components/ambient/LiquidGlassBackground'
+import TypewriterTitle from '../components/ui/TypewriterTitle'
 
 
 
@@ -184,12 +185,10 @@ const Insights = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="px-3.5 py-1 text-xs font-bold rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 border border-blue-500/20 tracking-wider uppercase">
+            <span className="font-nothing px-3.5 py-1 text-xs font-bold rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 border border-blue-500/20 tracking-widest uppercase">
               Activity & Log
             </span>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight mt-3 mb-4 text-gray-900 dark:text-white">
-              Insights & <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">Professional Feed</span>
-            </h1>
+            <TypewriterTitle texts={["Insights & Professional Feed", "Engineering Journal", "Systems & Security Notes"]} />
             <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg">
               A chronological feed of certificates earned, security learning, systems shipping updates, and technical notes.
             </p>

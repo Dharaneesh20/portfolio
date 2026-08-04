@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { getCodingProgress } from '../services/api'
 import { FaCode, FaTrophy, FaStar, FaFire } from 'react-icons/fa'
 import { SiLeetcode, SiHackerrank } from 'react-icons/si'
+import TypewriterTitle from '../components/ui/TypewriterTitle'
 
 interface PlatformProgress {
   _id?: string
@@ -81,7 +82,7 @@ const CodingProgress = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-12"
       >
-        <h1 className="section-title">Coding Platform Progress</h1>
+        <TypewriterTitle texts={["Coding Platform Progress", "LeetCode & Problem Solving", "Algorithmic Stats"]} />
         <p className="text-xl text-gray-600 dark:text-gray-400 mt-4">
           Tracking my journey across competitive programming platforms
         </p>

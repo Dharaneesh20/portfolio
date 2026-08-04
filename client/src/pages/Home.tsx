@@ -304,7 +304,7 @@ const Home = () => {
                   <p className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                     {stat.value}
                   </p>
-                  <p className="text-xs font-bold text-gray-905 dark:text-gray-200 uppercase tracking-wider mt-1.5 leading-snug">
+                  <p className="font-nothing text-xs font-bold text-gray-900 dark:text-gray-200 uppercase tracking-widest mt-1.5 leading-snug">
                     {stat.title}
                   </p>
                   <p className="text-[10px] text-gray-500 dark:text-gray-450 mt-1 font-medium whitespace-nowrap">
@@ -388,7 +388,7 @@ const Home = () => {
         <section className="py-12 border-t border-white/10 dark:border-gray-850">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-6 gap-4">
             <div>
-              <span className="text-xs font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest">Engineering Journal</span>
+              <span className="font-nothing text-xs font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest">Engineering Journal</span>
               <h2 className="text-3xl font-black tracking-tight mt-1">Latest Insights</h2>
             </div>
             <Link

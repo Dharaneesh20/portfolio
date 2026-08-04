@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getGitHubStats } from '../services/api'
+import TypewriterTitle from '../components/ui/TypewriterTitle'
 import {
   FaGithub,
   FaStar,
@@ -152,9 +153,7 @@ const GitHub = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-12"
       >
-        <h1 className="section-title flex items-center justify-center gap-3">
-          <FaGithub /> GitHub Stats
-        </h1>
+        <TypewriterTitle texts={["GitHub Stats", "Open-Source Activity", "Commit Metrics"]} />
         <p className="text-xl text-gray-600 dark:text-gray-400 mt-4">
           Open-source activity and contributions for{' '}
           <a

@@ -4,6 +4,7 @@ import { getCertifications, resolveImage } from '../services/api'
 import CloudLogo from '../components/CloudLogo'
 import ImageModal from '../components/ImageModal'
 import { FaChevronDown, FaSearchPlus } from 'react-icons/fa'
+import TypewriterTitle from '../components/ui/TypewriterTitle'
 
 interface Certification {
   _id: string
@@ -57,13 +58,7 @@ const Certifications = () => {
 
   return (
     <div className="container mx-auto px-4 py-20">
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="section-title"
-      >
-        Certifications
-      </motion.h1>
+      <TypewriterTitle texts={["Certifications", "AWS Certified", "MongoDB Administrator", "Technical Credentials"]} />
 
       {/* Provider Filter Dropdown */}
       <div className="max-w-4xl mx-auto mt-8 mb-12">

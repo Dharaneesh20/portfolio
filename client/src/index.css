@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Share+Tech+Mono&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@500;700;800&family=VT323&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -36,6 +38,22 @@
   .glass-card {
     @apply bg-white/40 dark:bg-[#030712]/50 backdrop-blur-xl border border-gray-200/40 dark:border-gray-800/60 rounded-2xl shadow-md hover:bg-white/60 dark:hover:bg-[#030712]/70 hover:border-gray-300 dark:hover:border-gray-700/80 hover:shadow-lg transition-all duration-300;
   }
+}
+
+/* Custom Nothing UI Typography Classes */
+.font-nothing {
+  font-family: 'DotGothic16', 'VT323', monospace !important;
+  letter-spacing: 0.08em;
+}
+
+.font-tech {
+  font-family: 'Space Grotesk', 'Share Tech Mono', sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+.font-dot {
+  font-family: 'Silkscreen', 'DotGothic16', monospace !important;
+  letter-spacing: 0.1em;
 }
 
 /* Custom Scrollbar */

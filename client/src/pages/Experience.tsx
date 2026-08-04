@@ -4,6 +4,7 @@ import { getExperiences } from '../services/api'
 import { FaBriefcase, FaCalendar, FaMapMarkerAlt, FaCertificate } from 'react-icons/fa'
 import ImageModal from '../components/ImageModal'
 import { getBadgeStyle } from '../utils/badgeColors'
+import TypewriterTitle from '../components/ui/TypewriterTitle'
 
 interface Project {
   name: string
@@ -74,13 +75,7 @@ const Experience = () => {
 
   return (
     <div className="container mx-auto px-4 py-20">
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="section-title"
-      >
-        Professional Experience
-      </motion.h1>
+      <TypewriterTitle texts={["Professional Experience", "Career History", "Work & Internships"]} />
 
       <div className="max-w-5xl mx-auto mt-12">
         {experiences.map((exp, index) => (
