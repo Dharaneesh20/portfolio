@@ -15,7 +15,8 @@ import {
   FaBriefcase,
   FaGithub,
   FaSync,
-  FaChartBar
+  FaChartBar,
+  FaRocket
 } from 'react-icons/fa'
 import { 
   getProjects, 
@@ -49,10 +50,12 @@ import {
   getAdminKpis,
   createKpi,
   updateKpi,
-  deleteKpi
+  deleteKpi,
+  getCurrentlyBuilding,
+  updateCurrentlyBuilding
 } from '../services/api'
 
-type Section = 'dashboard' | 'projects' | 'experience' | 'certifications' | 'blog' | 'cv' | 'coding-progress' | 'github' | 'insights' | 'kpis'
+type Section = 'dashboard' | 'projects' | 'experience' | 'certifications' | 'blog' | 'cv' | 'coding-progress' | 'github' | 'insights' | 'kpis' | 'currently-building'
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -71,6 +74,15 @@ const Admin = () => {
   const [showModal, setShowModal] = useState(false)
   const [editingItem, setEditingItem] = useState<any>(null)
   const [formData, setFormData] = useState<any>({})
+  const [currentlyBuildingData, setCurrentlyBuildingData] = useState<any>({
+    title: 'SCOPE — AI Context Optimization Engine',
+    description: 'High-performance prompt compression & context pruning engine designed for LLM agent memory reduction.',
+    progress: 82,
+    statusBadge: 'Active Labs',
+    moduleName: 'Memory Engine',
+    targetRelease: 'Q4 2026',
+    isActive: true
+  })
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -81,14 +93,15 @@ const Admin = () => {
   const loadData = async () => {
     try {
       if (activeSection === 'dashboard') {
-        const [projRes, expRes, certRes, blogRes, codeRes, insRes, kpiRes] = await Promise.all([
+        const [projRes, expRes, certRes, blogRes, codeRes, insRes, kpiRes, cbRes] = await Promise.all([
           getProjects(),
           getExperiences(),
           getCertifications(),
           getBlogPosts(),
           getCodingProgress(),
           getAllInsightsAdmin(),
-          getAdminKpis()
+          getAdminKpis(),
+          getCurrentlyBuilding()
         ])
         setProjects(projRes.data)
         setExperiences(expRes.data)
@@ -97,6 +110,10 @@ const Admin = () => {
         setCodingProgress(codeRes.data)
         setInsights(insRes.data)
         setKpis(kpiRes.data)
+        if (cbRes.data) setCurrentlyBuildingData(cbRes.data)
+      } else if (activeSection === 'currently-building') {
+        const res = await getCurrentlyBuilding()
+        if (res.data) setCurrentlyBuildingData(res.data)
       } else if (activeSection === 'projects') {
         const res = await getProjects()
         setProjects(res.data)
@@ -447,6 +464,14 @@ const Admin = () => {
       desc: 'Sync GitHub stats',
       color: 'from-gray-600 to-gray-800',
       count: githubStats ? 1 : 0
+    },
+    { 
+      id: 'currently-building', 
+      icon: FaRocket, 
+      title: 'Currently Building', 
+      desc: 'Customize SCOPE / Active Labs card',
+      color: 'from-orange-500 to-amber-500',
+      count: 1
     },
     { 
       id: 'kpis', 
@@ -2237,6 +2262,137 @@ const Admin = () => {
                 </p>
               </div>
             )}
+          </motion.div>
+        )}
+
+        {/* Currently Building Management */}
+        {activeSection === 'currently-building' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setActiveSection('dashboard')}
+                className="text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark"
+              >
+                ← Back to Dashboard
+              </button>
+              <h2 className="text-2xl font-bold">Manage "Currently Building" Card</h2>
+            </div>
+
+            <div className="card max-w-3xl mx-auto space-y-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
+                <FaRocket className="text-orange-500" />
+                <span>Customize Active Building Status</span>
+              </h3>
+
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault()
+                  try {
+                    const res = await updateCurrentlyBuilding(currentlyBuildingData)
+                    toast.success('Currently Building card updated successfully!')
+                    if (res.data?.data) setCurrentlyBuildingData(res.data.data)
+                  } catch (err: any) {
+                    toast.error(err.response?.data?.error || 'Failed to update Currently Building card')
+                  }
+                }}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Project Title</label>
+                  <input
+                    type="text"
+                    value={currentlyBuildingData.title || ''}
+                    onChange={(e) => setCurrentlyBuildingData({ ...currentlyBuildingData, title: e.target.value })}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                    placeholder="e.g. SCOPE — AI Context Optimization Engine"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Description</label>
+                  <textarea
+                    value={currentlyBuildingData.description || ''}
+                    onChange={(e) => setCurrentlyBuildingData({ ...currentlyBuildingData, description: e.target.value })}
+                    required
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 resize-none"
+                    placeholder="High-performance prompt compression & context pruning engine..."
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Progress Percentage (%)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={currentlyBuildingData.progress ?? 82}
+                      onChange={(e) => setCurrentlyBuildingData({ ...currentlyBuildingData, progress: Number(e.target.value) })}
+                      required
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Status Badge Label</label>
+                    <input
+                      type="text"
+                      value={currentlyBuildingData.statusBadge || ''}
+                      onChange={(e) => setCurrentlyBuildingData({ ...currentlyBuildingData, statusBadge: e.target.value })}
+                      required
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      placeholder="e.g. Active Labs"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Module / Focus Area Name</label>
+                    <input
+                      type="text"
+                      value={currentlyBuildingData.moduleName || ''}
+                      onChange={(e) => setCurrentlyBuildingData({ ...currentlyBuildingData, moduleName: e.target.value })}
+                      required
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      placeholder="e.g. Memory Engine"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Target Release Timeline</label>
+                    <input
+                      type="text"
+                      value={currentlyBuildingData.targetRelease || ''}
+                      onChange={(e) => setCurrentlyBuildingData({ ...currentlyBuildingData, targetRelease: e.target.value })}
+                      required
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                      placeholder="e.g. Q4 2026"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={currentlyBuildingData.isActive !== false}
+                      onChange={(e) => setCurrentlyBuildingData({ ...currentlyBuildingData, isActive: e.target.checked })}
+                      className="w-4 h-4 text-primary-light dark:text-primary-dark rounded"
+                    />
+                    <span className="text-sm font-semibold">Active (Show on Home Page)</span>
+                  </label>
+                </div>
+
+                <div className="pt-4">
+                  <button type="submit" className="btn-primary w-full">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
           </motion.div>
         )}
     </div>

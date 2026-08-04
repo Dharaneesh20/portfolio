@@ -15,6 +15,7 @@ import experienceRoutes from './routes/experience.js'
 import githubRoutes, { fetchAndCacheGitHubStats } from './routes/github.js'
 import insightRoutes, { migrateInsights } from './routes/insights.js'
 import kpiRoutes, { seedKpis } from './routes/kpis.js'
+import currentlyBuildingRoutes, { seedCurrentlyBuilding } from './routes/currentlyBuilding.js'
 
 
 
@@ -44,6 +45,7 @@ app.use('/api/coding-progress', codingProgressRoutes)
 app.use('/api/experience', experienceRoutes)
 app.use('/api/github', githubRoutes)
 app.use('/api/insights', insightRoutes)
+app.use('/api/currently-building', currentlyBuildingRoutes)
 app.use('/api', kpiRoutes)
 
 
@@ -59,6 +61,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio
     console.log('Connected to MongoDB')
     await seedKpis()
     await migrateInsights()
+    await seedCurrentlyBuilding()
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`)
     })

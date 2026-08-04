@@ -78,6 +78,10 @@ export const createKpi = (data: any) => api.post('/admin/dashboard/kpis', data)
 export const updateKpi = (id: string, data: any) => api.put(`/admin/dashboard/kpis/${id}`, data)
 export const deleteKpi = (id: string) => api.delete(`/admin/dashboard/kpis/${id}`)
 
+// Currently Building Status
+export const getCurrentlyBuilding = () => api.get('/currently-building')
+export const updateCurrentlyBuilding = (data: any) => api.put('/currently-building', data)
+
 
 
 export const resolveImage = (path?: string) => {

@@ -82,3 +82,19 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-gray-300 dark:bg-gray-800 rounded-full hover:bg-blue-500 dark:hover:bg-blue-400;
 }
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-33.333%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

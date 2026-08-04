@@ -24,6 +24,9 @@ import { trackClick } from '../utils/analytics'
 import ImageModal from '../components/ImageModal'
 import LiquidGlassBackground from '../components/ambient/LiquidGlassBackground'
 import { getBadgeStyle } from '../utils/badgeColors'
+import TechStackMarquee from '../components/ui/TechStackMarquee'
+import CurrentlyBuildingCard from '../components/ui/CurrentlyBuildingCard'
+import GitHubHeatmapWidget from '../components/ui/GitHubHeatmapWidget'
 
 
 
@@ -150,7 +153,7 @@ const Home = () => {
                 transition={{ duration: 0.5 }}
                 className="font-mono text-xs sm:text-sm tracking-[0.2em] uppercase font-semibold text-blue-600 dark:text-blue-400 inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20"
               >
-                <span className="w-2 h-2 bg-blue-500 rounded-full animate-ping" />
+                <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
                 <span>OPEN TO INTERNSHIPS & PLACEMENTS</span>
               </motion.div>
 
@@ -278,6 +281,9 @@ const Home = () => {
           </div>
         </section>
 
+        {/* Infinite Tech Stack Marquee */}
+        <TechStackMarquee />
+
 
         {/* B. SNAPSHOT METRICS SECTION */}
         <section className="py-8">
@@ -288,10 +294,10 @@ const Home = () => {
               ))
             ) : kpis.length === 0 ? (
               [
-                { title: 'Projects Built', value: `${projects.length > 0 ? projects.length : 10}+`, subtitle: 'MERN & Full-stack apps' },
-                { title: 'Certifications', value: `${certs.length > 0 ? certs.length : 8}+`, subtitle: 'AWS & technical courses' },
-                { title: 'Insights Logged', value: `${insights.length > 0 ? insights.length : 12}+`, subtitle: 'Chronological learning log' },
-                { title: 'Core Focus Areas', value: '3+', subtitle: 'Cloud · Network · Security' }
+                { title: 'Projects Built', num: projects.length > 0 ? projects.length : 10, suffix: '+', subtitle: 'MERN & Full-stack apps' },
+                { title: 'Certifications', num: certs.length > 0 ? certs.length : 8, suffix: '+', subtitle: 'AWS & technical courses' },
+                { title: 'Insights Logged', num: insights.length > 0 ? insights.length : 12, suffix: '+', subtitle: 'Chronological learning log' },
+                { title: 'Core Focus Areas', num: 3, suffix: '+', subtitle: 'Cloud · Network · Security' }
               ].map((stat, idx) => (
                 <motion.div
                   key={stat.title}
@@ -301,8 +307,8 @@ const Home = () => {
                   transition={{ duration: 0.4, delay: idx * 0.05 }}
                   className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border border-white/20 dark:border-gray-800/40 p-6 rounded-2xl shadow-sm text-center flex flex-col justify-center items-center min-h-[140px]"
                 >
-                  <p className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                    {stat.value}
+                  <p className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent font-mono">
+                    {stat.num}{stat.suffix}
                   </p>
                   <p className="font-nothing text-xs font-bold text-gray-900 dark:text-gray-200 uppercase tracking-widest mt-1.5 leading-snug">
                     {stat.title}
@@ -314,13 +320,14 @@ const Home = () => {
               ))
             ) : (
               kpis.map((kpi, idx) => {
-                let displayValue = kpi.value;
+                let numVal = parseInt(kpi.value, 10) || 10;
+                let suffixStr = '+';
                 if (kpi.value.toLowerCase().includes('projects.length')) {
-                  displayValue = `${projects.length > 0 ? projects.length : 10}+`;
+                  numVal = projects.length > 0 ? projects.length : 10;
                 } else if (kpi.value.toLowerCase().includes('certs.length')) {
-                  displayValue = `${certs.length > 0 ? certs.length : 8}+`;
+                  numVal = certs.length > 0 ? certs.length : 8;
                 } else if (kpi.value.toLowerCase().includes('insights.length')) {
-                  displayValue = `${insights.length > 0 ? insights.length : 12}+`;
+                  numVal = insights.length > 0 ? insights.length : 12;
                 }
 
                 return (
@@ -332,8 +339,8 @@ const Home = () => {
                     transition={{ duration: 0.4, delay: idx * 0.05 }}
                     className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border border-white/20 dark:border-gray-800/40 p-6 rounded-2xl shadow-sm text-center flex flex-col justify-center items-center min-h-[140px]"
                   >
-                    <p className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                      {displayValue}
+                    <p className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent font-mono">
+                      {numVal}{suffixStr}
                     </p>
                     <p className="text-xs font-bold text-gray-905 dark:text-gray-200 uppercase tracking-wider mt-1.5 leading-snug">
                       {kpi.title}
@@ -350,13 +357,18 @@ const Home = () => {
 
         {/* C. CORE FOCUS / WHAT I WORK ON SECTION */}
         <section className="py-12 border-t border-white/10 dark:border-gray-850">
-          <div className="text-center max-w-2xl mx-auto mb-8">
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-3">
+          <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight">
               Core <span className="font-serif-italic font-normal text-[#FF6B4A] px-1">Engineering</span> Focus
             </h2>
-            <p className="text-gray-650 dark:text-gray-400">
+            <p className="text-gray-650 dark:text-gray-400 text-xs sm:text-sm">
               Areas of active study, engineering labs, and codebase construction. Honest exploration without overclaimed credentials.
             </p>
+          </div>
+
+          {/* Currently Building Card Highlight */}
+          <div className="max-w-2xl mx-auto mb-8">
+            <CurrentlyBuildingCard />
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -523,6 +535,11 @@ const Home = () => {
               <span>See More Projects</span>
               <FaArrowRight className="text-sm" />
             </Link>
+          </div>
+
+          {/* GitHub Contribution Grid Widget */}
+          <div className="mb-8">
+            <GitHubHeatmapWidget />
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
