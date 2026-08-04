@@ -281,10 +281,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Infinite Tech Stack Marquee */}
-        <TechStackMarquee />
-
-
         {/* B. SNAPSHOT METRICS SECTION */}
         <section className="py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -353,6 +349,11 @@ const Home = () => {
               })
             )}
           </div>
+        </section>
+
+        {/* Tech Stack Marquee Section Below KPIs */}
+        <section className="py-6 border-t border-white/10 dark:border-gray-850">
+          <TechStackMarquee />
         </section>
 
         {/* C. CORE FOCUS / WHAT I WORK ON SECTION */}

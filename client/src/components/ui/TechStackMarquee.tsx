@@ -29,8 +29,8 @@ const TECH_STACK: TechItem[] = [
 
 export function TechStackMarquee() {
   return (
-    <div className="py-8 border-y border-white/10 dark:border-gray-800/60 overflow-hidden relative bg-white/10 dark:bg-gray-900/20 backdrop-blur-md select-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+    <div className="py-8 overflow-hidden relative select-none">
+      <div className="mb-6">
         <span className="text-xs font-mono font-bold text-emerald-500 uppercase tracking-widest">
           DEVELOPMENT STACK
         </span>
@@ -39,18 +39,18 @@ export function TechStackMarquee() {
         </h2>
       </div>
 
-      <div className="relative">
-        {/* Gradient Fades */}
-        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-r from-white dark:from-[#030712] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-l from-white dark:from-[#030712] to-transparent z-10 pointer-events-none" />
+      <div className="relative py-2">
+        {/* Edge Gradient Fades */}
+        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-transparent via-transparent to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-transparent via-transparent to-transparent z-10 pointer-events-none" />
 
-        <div className="flex space-x-8 animate-marquee whitespace-nowrap">
+        <div className="flex space-x-6 animate-marquee whitespace-nowrap">
           {[...TECH_STACK, ...TECH_STACK, ...TECH_STACK].map((item, idx) => {
             const Icon = item.icon
             return (
               <div
                 key={`${item.name}-${idx}`}
-                className="inline-flex items-center space-x-2.5 px-4 py-2 rounded-xl bg-white/30 dark:bg-gray-800/40 border border-white/20 dark:border-gray-700/40 text-xs font-bold text-gray-800 dark:text-gray-200 transition-all hover:scale-105"
+                className="inline-flex items-center space-x-2.5 px-4 py-2 rounded-xl bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/20 dark:border-gray-800/60 text-xs font-bold text-gray-800 dark:text-gray-200 transition-all hover:scale-105 shadow-xs"
               >
                 <Icon className={`text-base ${item.color}`} />
                 <span className="font-mono tracking-wide">{item.name}</span>
