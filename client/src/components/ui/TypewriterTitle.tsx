@@ -86,6 +86,13 @@ export default function TypewriterTitle(props: TypewriterTitleProps) {
   const currentText = safeTexts[textIndex] ?? safeTexts[0] ?? "";
   const displayed = currentText.slice(0, charIndex);
 
+  const fontFamily =
+    fontVariant === "nothing"
+      ? "'DotGothic16', monospace"
+      : fontVariant === "dot"
+      ? "'Silkscreen', monospace"
+      : "'Space Grotesk', sans-serif";
+
   useEffect(() => {
     setTextIndex(0);
     setCharIndex(0);
@@ -154,42 +161,75 @@ export default function TypewriterTitle(props: TypewriterTitleProps) {
 
   return (
     <div
-      className={`text-4xl md:text-5xl font-extrabold ${fontClass} text-center mb-8 flex items-center justify-center flex-wrap leading-tight select-none ${className}`}
-      style={{ fontFamily: fontVariant === 'nothing' ? "'DotGothic16', monospace" : fontVariant === 'dot' ? "'Silkscreen', monospace" : "'Space Grotesk', sans-serif" }}
-      aria-label={`${prefix}${currentText}`}
+      className={`grid place-items-center w-full mb-8 min-h-[3.5rem] md:min-h-[4.5rem] relative ${className}`}
+      style={{ contain: "layout style" }}
     >
-      {prefix && (
-        <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent mr-2">
-          {prefix}
-        </span>
-      )}
+      {/* Invisible Ghost layer reserving full layout space across all titles */}
+      <div
+        className="col-start-1 row-start-1 grid place-items-center invisible pointer-events-none select-none"
+        aria-hidden="true"
+      >
+        {safeTexts.map((text, idx) => (
+          <div
+            key={idx}
+            className={`col-start-1 row-start-1 text-4xl md:text-5xl font-extrabold ${fontClass} text-center flex items-center justify-center flex-wrap leading-tight select-none`}
+            style={{ fontFamily }}
+          >
+            {prefix && <span className="mr-2">{prefix}</span>}
+            <span>{text}</span>
+            <span
+              style={{
+                display: "inline-block",
+                width: cursorWidth,
+                height: cursorHeight,
+                marginLeft: "0.12em",
+                verticalAlign: "-0.05em",
+              }}
+            />
+          </div>
+        ))}
+      </div>
 
-      {/* Gradient Animated Custom Font Text */}
-      <span className="relative inline-flex items-center">
-        <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
-          {displayed}
-        </span>
+      {/* Active Visible Typewriter Title layer */}
+      <div
+        className={`col-start-1 row-start-1 text-4xl md:text-5xl font-extrabold ${fontClass} text-center flex items-center justify-center flex-wrap leading-tight select-none`}
+        style={{ fontFamily }}
+        aria-label={`${prefix}${currentText}`}
+      >
+        {prefix && (
+          <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent mr-2">
+            {prefix}
+          </span>
+        )}
 
-        {/* Animated Glowing Liquid Cursor */}
-        <span
-          aria-hidden="true"
-          style={{
-            display: "inline-block",
-            boxSizing: "border-box",
-            width: cursorWidth,
-            height: cursorHeight,
-            marginLeft: "0.12em",
-            verticalAlign: "-0.05em",
-            backgroundColor: cursorColor,
-            border: `1.5px solid ${cursorBorderColor}`,
-            borderRadius: 3,
-            boxShadow: `0 0 12px ${cursorColor}, 0 0 4px ${cursorBorderColor}`,
-            opacity: cursorOn ? 1 : 0,
-            transition: "opacity 0.15s ease",
-            willChange: "opacity",
-          }}
-        />
-      </span>
+        {/* Gradient Animated Custom Font Text */}
+        <span className="relative inline-flex items-center">
+          <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            {displayed || "\u00A0"}
+          </span>
+
+          {/* Animated Glowing Liquid Cursor */}
+          <span
+            aria-hidden="true"
+            style={{
+              display: "inline-block",
+              boxSizing: "border-box",
+              width: cursorWidth,
+              height: cursorHeight,
+              marginLeft: "0.12em",
+              verticalAlign: "-0.05em",
+              backgroundColor: cursorColor,
+              border: `1.5px solid ${cursorBorderColor}`,
+              borderRadius: 3,
+              boxShadow: `0 0 12px ${cursorColor}, 0 0 4px ${cursorBorderColor}`,
+              opacity: cursorOn ? 1 : 0,
+              transition: "opacity 0.15s ease",
+              willChange: "opacity",
+            }}
+          />
+        </span>
+      </div>
     </div>
   );
 }
+
